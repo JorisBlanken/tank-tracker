@@ -57,16 +57,24 @@ export const systemRouter = createTRPCRouter({
   listMine: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.system.findMany({
       where: { createdById: ctx.session.user.id },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ displayOrder: "asc" }, { createdAt: "desc" }],
       select: {
         id: true,
         name: true,
+        displayOrder: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         parameters: {
           orderBy: { displayOrder: "asc" },
           select: {
             id: true,
             abbreviatedName: true,
             unit: true,
+            showOnOverview: true,
             displayDecimals: true,
             logs: {
               orderBy: { loggedAt: "desc" },
@@ -90,13 +98,25 @@ export const systemRouter = createTRPCRouter({
         .optional()
     )
     .mutation(async ({ ctx, input }) => {
-    const systemCount = await ctx.db.system.count({
-      where: { createdById: ctx.session.user.id },
-    });
+    const [systemCount, existing] = await Promise.all([
+      ctx.db.system.count({
+        where: { createdById: ctx.session.user.id },
+      }),
+      ctx.db.system.findMany({
+        where: { createdById: ctx.session.user.id },
+        select: { displayOrder: true },
+      }),
+    ]);
+
+    const maxDisplayOrder = existing.reduce(
+      (max, system) => Math.max(max, system.displayOrder),
+      -1
+    );
 
     return ctx.db.system.create({
       data: {
         name: input?.name ?? `System ${systemCount + 1}`,
+        displayOrder: maxDisplayOrder + 1,
         createdBy: { connect: { id: ctx.session.user.id } },
         parameters: {
           create: DEFAULT_PARAMETERS,
@@ -162,6 +182,63 @@ export const systemRouter = createTRPCRouter({
       return { id: input.id };
     }),
 
+  moveSystem: protectedProcedure
+    .input(
+      z.object({
+        systemId: z.string().cuid(),
+        direction: z.enum(["up", "down"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const systems = await ctx.db.system.findMany({
+        where: { createdById: ctx.session.user.id },
+        orderBy: [{ displayOrder: "asc" }, { createdAt: "desc" }],
+        select: { id: true, displayOrder: true },
+      });
+
+      const currentIndex = systems.findIndex((system) => system.id === input.systemId);
+      if (currentIndex === -1) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const targetIndex = input.direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      if (targetIndex < 0 || targetIndex >= systems.length) {
+        return [];
+      }
+
+      const reordered = [...systems];
+      const current = reordered[currentIndex];
+      const target = reordered[targetIndex];
+      if (!current || !target) {
+        return [];
+      }
+
+      reordered[currentIndex] = target;
+      reordered[targetIndex] = current;
+
+      const updates = reordered
+        .map((system, index) => ({ id: system.id, displayOrder: index }))
+        .filter((nextOrder) => {
+          const previous = systems.find((system) => system.id === nextOrder.id);
+          return previous?.displayOrder !== nextOrder.displayOrder;
+        });
+
+      if (updates.length === 0) {
+        return [];
+      }
+
+      await ctx.db.$transaction(
+        updates.map((update) =>
+          ctx.db.system.update({
+            where: { id: update.id },
+            data: { displayOrder: update.displayOrder },
+          })
+        )
+      );
+
+      return updates;
+    }),
+
   updateParameter: protectedProcedure
     .input(
       z
@@ -170,6 +247,7 @@ export const systemRouter = createTRPCRouter({
           fullName: z.string().trim().min(1).max(80).optional(),
           abbreviatedName: z.string().trim().min(1).max(12).optional(),
           unit: z.string().trim().max(16).optional(),
+          showOnOverview: z.boolean().optional(),
           displayDecimals: z.number().int().min(0).max(4).optional(),
           lowerBound: z.number().finite().optional(),
           upperBound: z.number().finite().optional(),
@@ -180,6 +258,7 @@ export const systemRouter = createTRPCRouter({
             input.fullName !== undefined ||
             input.abbreviatedName !== undefined ||
             input.unit !== undefined ||
+            input.showOnOverview !== undefined ||
             input.displayDecimals !== undefined ||
             input.lowerBound !== undefined ||
             input.upperBound !== undefined ||
@@ -206,12 +285,72 @@ export const systemRouter = createTRPCRouter({
           fullName: input.fullName,
           abbreviatedName: input.abbreviatedName,
           unit: input.unit,
+          showOnOverview: input.showOnOverview,
           displayDecimals: input.displayDecimals,
           lowerBound: input.lowerBound,
           upperBound: input.upperBound,
           displayOrder: input.displayOrder,
         },
       });
+    }),
+
+  moveParameter: protectedProcedure
+    .input(
+      z.object({
+        parameterId: z.number().int().positive(),
+        direction: z.enum(["up", "down"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const current = await ctx.db.systemParameter.findFirst({
+        where: {
+          id: input.parameterId,
+          system: { createdById: ctx.session.user.id },
+        },
+        select: {
+          id: true,
+          systemId: true,
+          displayOrder: true,
+        },
+      });
+
+      if (!current) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const adjacent = await ctx.db.systemParameter.findFirst({
+        where: {
+          systemId: current.systemId,
+          displayOrder:
+            input.direction === "up"
+              ? { lt: current.displayOrder }
+              : { gt: current.displayOrder },
+        },
+        orderBy: {
+          displayOrder: input.direction === "up" ? "desc" : "asc",
+        },
+        select: {
+          id: true,
+          displayOrder: true,
+        },
+      });
+
+      if (!adjacent) {
+        return [];
+      }
+
+      return ctx.db.$transaction([
+        ctx.db.systemParameter.update({
+          where: { id: current.id },
+          data: { displayOrder: adjacent.displayOrder },
+          select: { id: true, displayOrder: true },
+        }),
+        ctx.db.systemParameter.update({
+          where: { id: adjacent.id },
+          data: { displayOrder: current.displayOrder },
+          select: { id: true, displayOrder: true },
+        }),
+      ]);
     }),
 
   createParameter: protectedProcedure
@@ -221,6 +360,7 @@ export const systemRouter = createTRPCRouter({
         fullName: z.string().trim().max(80).optional(),
         abbreviatedName: z.string().trim().max(12).optional(),
         unit: z.string().trim().max(16).optional(),
+        showOnOverview: z.boolean().optional(),
         displayDecimals: z.number().int().min(0).max(4).optional(),
         lowerBound: z.number().finite().optional(),
         upperBound: z.number().finite().optional(),
@@ -275,7 +415,8 @@ export const systemRouter = createTRPCRouter({
           fullName: nextFullName,
           abbreviatedName: nextAbbreviation,
           unit: input.unit ?? "",
-          displayDecimals: input.displayDecimals ?? 1,
+          showOnOverview: input.showOnOverview ?? true,
+          displayDecimals: input.displayDecimals ?? 0,
           lowerBound: input.lowerBound ?? 0,
           upperBound: input.upperBound ?? 0,
           displayOrder: maxOrder + 1,
@@ -914,6 +1055,7 @@ export const systemRouter = createTRPCRouter({
               fullName: true,
               abbreviatedName: true,
               unit: true,
+              showOnOverview: true,
               displayDecimals: true,
               lowerBound: true,
               upperBound: true,

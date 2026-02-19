@@ -1755,13 +1755,24 @@ export namespace Prisma {
 
   export type AggregateSystem = {
     _count: SystemCountAggregateOutputType | null
+    _avg: SystemAvgAggregateOutputType | null
+    _sum: SystemSumAggregateOutputType | null
     _min: SystemMinAggregateOutputType | null
     _max: SystemMaxAggregateOutputType | null
+  }
+
+  export type SystemAvgAggregateOutputType = {
+    displayOrder: number | null
+  }
+
+  export type SystemSumAggregateOutputType = {
+    displayOrder: number | null
   }
 
   export type SystemMinAggregateOutputType = {
     id: string | null
     name: string | null
+    displayOrder: number | null
     createdAt: Date | null
     updatedAt: Date | null
     createdById: string | null
@@ -1770,6 +1781,7 @@ export namespace Prisma {
   export type SystemMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    displayOrder: number | null
     createdAt: Date | null
     updatedAt: Date | null
     createdById: string | null
@@ -1778,6 +1790,7 @@ export namespace Prisma {
   export type SystemCountAggregateOutputType = {
     id: number
     name: number
+    displayOrder: number
     createdAt: number
     updatedAt: number
     createdById: number
@@ -1785,9 +1798,18 @@ export namespace Prisma {
   }
 
 
+  export type SystemAvgAggregateInputType = {
+    displayOrder?: true
+  }
+
+  export type SystemSumAggregateInputType = {
+    displayOrder?: true
+  }
+
   export type SystemMinAggregateInputType = {
     id?: true
     name?: true
+    displayOrder?: true
     createdAt?: true
     updatedAt?: true
     createdById?: true
@@ -1796,6 +1818,7 @@ export namespace Prisma {
   export type SystemMaxAggregateInputType = {
     id?: true
     name?: true
+    displayOrder?: true
     createdAt?: true
     updatedAt?: true
     createdById?: true
@@ -1804,6 +1827,7 @@ export namespace Prisma {
   export type SystemCountAggregateInputType = {
     id?: true
     name?: true
+    displayOrder?: true
     createdAt?: true
     updatedAt?: true
     createdById?: true
@@ -1848,6 +1872,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: SystemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SystemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: SystemMinAggregateInputType
@@ -1878,6 +1914,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SystemCountAggregateInputType | true
+    _avg?: SystemAvgAggregateInputType
+    _sum?: SystemSumAggregateInputType
     _min?: SystemMinAggregateInputType
     _max?: SystemMaxAggregateInputType
   }
@@ -1885,10 +1923,13 @@ export namespace Prisma {
   export type SystemGroupByOutputType = {
     id: string
     name: string
+    displayOrder: number
     createdAt: Date
     updatedAt: Date
     createdById: string
     _count: SystemCountAggregateOutputType | null
+    _avg: SystemAvgAggregateOutputType | null
+    _sum: SystemSumAggregateOutputType | null
     _min: SystemMinAggregateOutputType | null
     _max: SystemMaxAggregateOutputType | null
   }
@@ -1910,6 +1951,7 @@ export namespace Prisma {
   export type SystemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    displayOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
@@ -1923,6 +1965,7 @@ export namespace Prisma {
   export type SystemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    displayOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
@@ -1932,6 +1975,7 @@ export namespace Prisma {
   export type SystemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    displayOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
@@ -1941,12 +1985,13 @@ export namespace Prisma {
   export type SystemSelectScalar = {
     id?: boolean
     name?: boolean
+    displayOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
   }
 
-  export type SystemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["system"]>
+  export type SystemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "displayOrder" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["system"]>
   export type SystemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     parameters?: boolean | System$parametersArgs<ExtArgs>
@@ -1972,6 +2017,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      displayOrder: number
       createdAt: Date
       updatedAt: Date
       createdById: string
@@ -2404,6 +2450,7 @@ export namespace Prisma {
   interface SystemFieldRefs {
     readonly id: FieldRef<"System", 'String'>
     readonly name: FieldRef<"System", 'String'>
+    readonly displayOrder: FieldRef<"System", 'Int'>
     readonly createdAt: FieldRef<"System", 'DateTime'>
     readonly updatedAt: FieldRef<"System", 'DateTime'>
     readonly createdById: FieldRef<"System", 'String'>
@@ -5230,6 +5277,7 @@ export namespace Prisma {
     fullName: string | null
     abbreviatedName: string | null
     unit: string | null
+    showOnOverview: boolean | null
     displayDecimals: number | null
     lowerBound: number | null
     upperBound: number | null
@@ -5244,6 +5292,7 @@ export namespace Prisma {
     fullName: string | null
     abbreviatedName: string | null
     unit: string | null
+    showOnOverview: boolean | null
     displayDecimals: number | null
     lowerBound: number | null
     upperBound: number | null
@@ -5258,6 +5307,7 @@ export namespace Prisma {
     fullName: number
     abbreviatedName: number
     unit: number
+    showOnOverview: number
     displayDecimals: number
     lowerBound: number
     upperBound: number
@@ -5290,6 +5340,7 @@ export namespace Prisma {
     fullName?: true
     abbreviatedName?: true
     unit?: true
+    showOnOverview?: true
     displayDecimals?: true
     lowerBound?: true
     upperBound?: true
@@ -5304,6 +5355,7 @@ export namespace Prisma {
     fullName?: true
     abbreviatedName?: true
     unit?: true
+    showOnOverview?: true
     displayDecimals?: true
     lowerBound?: true
     upperBound?: true
@@ -5318,6 +5370,7 @@ export namespace Prisma {
     fullName?: true
     abbreviatedName?: true
     unit?: true
+    showOnOverview?: true
     displayDecimals?: true
     lowerBound?: true
     upperBound?: true
@@ -5419,6 +5472,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview: boolean
     displayDecimals: number
     lowerBound: number
     upperBound: number
@@ -5452,6 +5506,7 @@ export namespace Prisma {
     fullName?: boolean
     abbreviatedName?: boolean
     unit?: boolean
+    showOnOverview?: boolean
     displayDecimals?: boolean
     lowerBound?: boolean
     upperBound?: boolean
@@ -5470,6 +5525,7 @@ export namespace Prisma {
     fullName?: boolean
     abbreviatedName?: boolean
     unit?: boolean
+    showOnOverview?: boolean
     displayDecimals?: boolean
     lowerBound?: boolean
     upperBound?: boolean
@@ -5485,6 +5541,7 @@ export namespace Prisma {
     fullName?: boolean
     abbreviatedName?: boolean
     unit?: boolean
+    showOnOverview?: boolean
     displayDecimals?: boolean
     lowerBound?: boolean
     upperBound?: boolean
@@ -5500,6 +5557,7 @@ export namespace Prisma {
     fullName?: boolean
     abbreviatedName?: boolean
     unit?: boolean
+    showOnOverview?: boolean
     displayDecimals?: boolean
     lowerBound?: boolean
     upperBound?: boolean
@@ -5509,7 +5567,7 @@ export namespace Prisma {
     systemId?: boolean
   }
 
-  export type SystemParameterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "abbreviatedName" | "unit" | "displayDecimals" | "lowerBound" | "upperBound" | "displayOrder" | "createdAt" | "updatedAt" | "systemId", ExtArgs["result"]["systemParameter"]>
+  export type SystemParameterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "abbreviatedName" | "unit" | "showOnOverview" | "displayDecimals" | "lowerBound" | "upperBound" | "displayOrder" | "createdAt" | "updatedAt" | "systemId", ExtArgs["result"]["systemParameter"]>
   export type SystemParameterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     system?: boolean | SystemDefaultArgs<ExtArgs>
     logs?: boolean | SystemParameter$logsArgs<ExtArgs>
@@ -5535,6 +5593,7 @@ export namespace Prisma {
       fullName: string
       abbreviatedName: string
       unit: string
+      showOnOverview: boolean
       displayDecimals: number
       lowerBound: number
       upperBound: number
@@ -5972,6 +6031,7 @@ export namespace Prisma {
     readonly fullName: FieldRef<"SystemParameter", 'String'>
     readonly abbreviatedName: FieldRef<"SystemParameter", 'String'>
     readonly unit: FieldRef<"SystemParameter", 'String'>
+    readonly showOnOverview: FieldRef<"SystemParameter", 'Boolean'>
     readonly displayDecimals: FieldRef<"SystemParameter", 'Int'>
     readonly lowerBound: FieldRef<"SystemParameter", 'Float'>
     readonly upperBound: FieldRef<"SystemParameter", 'Float'>
@@ -11896,6 +11956,7 @@ export namespace Prisma {
   export const SystemScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    displayOrder: 'displayOrder',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     createdById: 'createdById'
@@ -11938,6 +11999,7 @@ export namespace Prisma {
     fullName: 'fullName',
     abbreviatedName: 'abbreviatedName',
     unit: 'unit',
+    showOnOverview: 'showOnOverview',
     displayDecimals: 'displayDecimals',
     lowerBound: 'lowerBound',
     upperBound: 'upperBound',
@@ -12040,16 +12102,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
+   * Reference to a field of type 'Int'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'DateTime'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
@@ -12065,6 +12127,13 @@ export namespace Prisma {
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
   /**
    * Deep Input Types
    */
@@ -12076,6 +12145,7 @@ export namespace Prisma {
     NOT?: SystemWhereInput | SystemWhereInput[]
     id?: StringFilter<"System"> | string
     name?: StringFilter<"System"> | string
+    displayOrder?: IntFilter<"System"> | number
     createdAt?: DateTimeFilter<"System"> | Date | string
     updatedAt?: DateTimeFilter<"System"> | Date | string
     createdById?: StringFilter<"System"> | string
@@ -12088,6 +12158,7 @@ export namespace Prisma {
   export type SystemOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    displayOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
@@ -12103,6 +12174,7 @@ export namespace Prisma {
     OR?: SystemWhereInput[]
     NOT?: SystemWhereInput | SystemWhereInput[]
     name?: StringFilter<"System"> | string
+    displayOrder?: IntFilter<"System"> | number
     createdAt?: DateTimeFilter<"System"> | Date | string
     updatedAt?: DateTimeFilter<"System"> | Date | string
     createdById?: StringFilter<"System"> | string
@@ -12115,12 +12187,15 @@ export namespace Prisma {
   export type SystemOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    displayOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
     _count?: SystemCountOrderByAggregateInput
+    _avg?: SystemAvgOrderByAggregateInput
     _max?: SystemMaxOrderByAggregateInput
     _min?: SystemMinOrderByAggregateInput
+    _sum?: SystemSumOrderByAggregateInput
   }
 
   export type SystemScalarWhereWithAggregatesInput = {
@@ -12129,6 +12204,7 @@ export namespace Prisma {
     NOT?: SystemScalarWhereWithAggregatesInput | SystemScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"System"> | string
     name?: StringWithAggregatesFilter<"System"> | string
+    displayOrder?: IntWithAggregatesFilter<"System"> | number
     createdAt?: DateTimeWithAggregatesFilter<"System"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"System"> | Date | string
     createdById?: StringWithAggregatesFilter<"System"> | string
@@ -12294,6 +12370,7 @@ export namespace Prisma {
     fullName?: StringFilter<"SystemParameter"> | string
     abbreviatedName?: StringFilter<"SystemParameter"> | string
     unit?: StringFilter<"SystemParameter"> | string
+    showOnOverview?: BoolFilter<"SystemParameter"> | boolean
     displayDecimals?: IntFilter<"SystemParameter"> | number
     lowerBound?: FloatFilter<"SystemParameter"> | number
     upperBound?: FloatFilter<"SystemParameter"> | number
@@ -12311,6 +12388,7 @@ export namespace Prisma {
     fullName?: SortOrder
     abbreviatedName?: SortOrder
     unit?: SortOrder
+    showOnOverview?: SortOrder
     displayDecimals?: SortOrder
     lowerBound?: SortOrder
     upperBound?: SortOrder
@@ -12332,6 +12410,7 @@ export namespace Prisma {
     fullName?: StringFilter<"SystemParameter"> | string
     abbreviatedName?: StringFilter<"SystemParameter"> | string
     unit?: StringFilter<"SystemParameter"> | string
+    showOnOverview?: BoolFilter<"SystemParameter"> | boolean
     displayDecimals?: IntFilter<"SystemParameter"> | number
     lowerBound?: FloatFilter<"SystemParameter"> | number
     upperBound?: FloatFilter<"SystemParameter"> | number
@@ -12349,6 +12428,7 @@ export namespace Prisma {
     fullName?: SortOrder
     abbreviatedName?: SortOrder
     unit?: SortOrder
+    showOnOverview?: SortOrder
     displayDecimals?: SortOrder
     lowerBound?: SortOrder
     upperBound?: SortOrder
@@ -12371,6 +12451,7 @@ export namespace Prisma {
     fullName?: StringWithAggregatesFilter<"SystemParameter"> | string
     abbreviatedName?: StringWithAggregatesFilter<"SystemParameter"> | string
     unit?: StringWithAggregatesFilter<"SystemParameter"> | string
+    showOnOverview?: BoolWithAggregatesFilter<"SystemParameter"> | boolean
     displayDecimals?: IntWithAggregatesFilter<"SystemParameter"> | number
     lowerBound?: FloatWithAggregatesFilter<"SystemParameter"> | number
     upperBound?: FloatWithAggregatesFilter<"SystemParameter"> | number
@@ -12697,6 +12778,7 @@ export namespace Prisma {
   export type SystemCreateInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSystemsInput
@@ -12708,6 +12790,7 @@ export namespace Prisma {
   export type SystemUncheckedCreateInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -12719,6 +12802,7 @@ export namespace Prisma {
   export type SystemUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
@@ -12730,6 +12814,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -12741,6 +12826,7 @@ export namespace Prisma {
   export type SystemCreateManyInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -12749,6 +12835,7 @@ export namespace Prisma {
   export type SystemUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12756,6 +12843,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -12917,6 +13005,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -12933,6 +13022,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -12948,6 +13038,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -12964,6 +13055,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -12980,6 +13072,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -12993,6 +13086,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -13006,6 +13100,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -13357,6 +13452,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -13406,14 +13512,20 @@ export namespace Prisma {
   export type SystemCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    displayOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
   }
 
+  export type SystemAvgOrderByAggregateInput = {
+    displayOrder?: SortOrder
+  }
+
   export type SystemMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    displayOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
@@ -13422,9 +13534,14 @@ export namespace Prisma {
   export type SystemMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    displayOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
+  }
+
+  export type SystemSumOrderByAggregateInput = {
+    displayOrder?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -13444,6 +13561,22 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -13456,17 +13589,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -13526,22 +13648,6 @@ export namespace Prisma {
 
   export type FilterMediaSumOrderByAggregateInput = {
     id?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -13716,6 +13822,11 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
@@ -13747,6 +13858,7 @@ export namespace Prisma {
     fullName?: SortOrder
     abbreviatedName?: SortOrder
     unit?: SortOrder
+    showOnOverview?: SortOrder
     displayDecimals?: SortOrder
     lowerBound?: SortOrder
     upperBound?: SortOrder
@@ -13769,6 +13881,7 @@ export namespace Prisma {
     fullName?: SortOrder
     abbreviatedName?: SortOrder
     unit?: SortOrder
+    showOnOverview?: SortOrder
     displayDecimals?: SortOrder
     lowerBound?: SortOrder
     upperBound?: SortOrder
@@ -13783,6 +13896,7 @@ export namespace Prisma {
     fullName?: SortOrder
     abbreviatedName?: SortOrder
     unit?: SortOrder
+    showOnOverview?: SortOrder
     displayDecimals?: SortOrder
     lowerBound?: SortOrder
     upperBound?: SortOrder
@@ -13798,6 +13912,14 @@ export namespace Prisma {
     lowerBound?: SortOrder
     upperBound?: SortOrder
     displayOrder?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -14073,6 +14195,14 @@ export namespace Prisma {
     set?: string
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -14187,14 +14317,6 @@ export namespace Prisma {
     update?: XOR<XOR<SystemUpdateToOneWithWhereWithoutFilterMediaInput, SystemUpdateWithoutFilterMediaInput>, SystemUncheckedUpdateWithoutFilterMediaInput>
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type SystemCreateNestedOneWithoutActivitiesInput = {
     create?: XOR<SystemCreateWithoutActivitiesInput, SystemUncheckedCreateWithoutActivitiesInput>
     connectOrCreate?: SystemCreateOrConnectWithoutActivitiesInput
@@ -14281,6 +14403,10 @@ export namespace Prisma {
     connectOrCreate?: SystemActivityCreateOrConnectWithoutParameterInput | SystemActivityCreateOrConnectWithoutParameterInput[]
     createMany?: SystemActivityCreateManyParameterInputEnvelope
     connect?: SystemActivityWhereUniqueInput | SystemActivityWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -14537,6 +14663,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -14565,42 +14702,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -14626,6 +14727,31 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -14744,6 +14870,19 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
@@ -14789,6 +14928,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -14804,6 +14944,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -14936,6 +15077,7 @@ export namespace Prisma {
     fullName?: StringFilter<"SystemParameter"> | string
     abbreviatedName?: StringFilter<"SystemParameter"> | string
     unit?: StringFilter<"SystemParameter"> | string
+    showOnOverview?: BoolFilter<"SystemParameter"> | boolean
     displayDecimals?: IntFilter<"SystemParameter"> | number
     lowerBound?: FloatFilter<"SystemParameter"> | number
     upperBound?: FloatFilter<"SystemParameter"> | number
@@ -15009,6 +15151,7 @@ export namespace Prisma {
   export type SystemCreateWithoutFilterMediaInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSystemsInput
@@ -15019,6 +15162,7 @@ export namespace Prisma {
   export type SystemUncheckedCreateWithoutFilterMediaInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -15045,6 +15189,7 @@ export namespace Prisma {
   export type SystemUpdateWithoutFilterMediaInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
@@ -15055,6 +15200,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateWithoutFilterMediaInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -15065,6 +15211,7 @@ export namespace Prisma {
   export type SystemCreateWithoutActivitiesInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSystemsInput
@@ -15075,6 +15222,7 @@ export namespace Prisma {
   export type SystemUncheckedCreateWithoutActivitiesInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -15091,6 +15239,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -15106,6 +15255,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -15135,6 +15285,7 @@ export namespace Prisma {
   export type SystemUpdateWithoutActivitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
@@ -15145,6 +15296,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateWithoutActivitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -15167,6 +15319,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15182,6 +15335,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15195,6 +15349,7 @@ export namespace Prisma {
   export type SystemCreateWithoutParametersInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutSystemsInput
@@ -15205,6 +15360,7 @@ export namespace Prisma {
   export type SystemUncheckedCreateWithoutParametersInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -15287,6 +15443,7 @@ export namespace Prisma {
   export type SystemUpdateWithoutParametersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
@@ -15297,6 +15454,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateWithoutParametersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -15352,6 +15510,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -15367,6 +15526,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -15397,6 +15557,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15412,6 +15573,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15597,6 +15759,7 @@ export namespace Prisma {
   export type SystemCreateWithoutCreatedByInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     parameters?: SystemParameterCreateNestedManyWithoutSystemInput
@@ -15607,6 +15770,7 @@ export namespace Prisma {
   export type SystemUncheckedCreateWithoutCreatedByInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     parameters?: SystemParameterUncheckedCreateNestedManyWithoutSystemInput
@@ -15706,6 +15870,7 @@ export namespace Prisma {
     NOT?: SystemScalarWhereInput | SystemScalarWhereInput[]
     id?: StringFilter<"System"> | string
     name?: StringFilter<"System"> | string
+    displayOrder?: IntFilter<"System"> | number
     createdAt?: DateTimeFilter<"System"> | Date | string
     updatedAt?: DateTimeFilter<"System"> | Date | string
     createdById?: StringFilter<"System"> | string
@@ -15716,6 +15881,7 @@ export namespace Prisma {
     fullName: string
     abbreviatedName: string
     unit: string
+    showOnOverview?: boolean
     displayDecimals?: number
     lowerBound: number
     upperBound: number
@@ -15749,6 +15915,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15764,6 +15931,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15779,6 +15947,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
     unit?: StringFieldUpdateOperationsInput | string
+    showOnOverview?: BoolFieldUpdateOperationsInput | boolean
     displayDecimals?: IntFieldUpdateOperationsInput | number
     lowerBound?: FloatFieldUpdateOperationsInput | number
     upperBound?: FloatFieldUpdateOperationsInput | number
@@ -15950,6 +16119,7 @@ export namespace Prisma {
   export type SystemCreateManyCreatedByInput = {
     id?: string
     name: string
+    displayOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16020,6 +16190,7 @@ export namespace Prisma {
   export type SystemUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parameters?: SystemParameterUpdateManyWithoutSystemNestedInput
@@ -16030,6 +16201,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parameters?: SystemParameterUncheckedUpdateManyWithoutSystemNestedInput
@@ -16040,6 +16212,7 @@ export namespace Prisma {
   export type SystemUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

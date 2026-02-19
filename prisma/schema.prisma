@@ -18,6 +18,7 @@ datasource db {
 model System {
   id        String   @id @default(cuid())
   name      String
+  displayOrder Int   @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -29,6 +30,7 @@ model System {
   filterMedia FilterMedia[]
 
   @@index([createdById])
+  @@index([createdById, displayOrder])
   @@index([name])
 }
 
@@ -83,6 +85,7 @@ model SystemParameter {
   fullName        String
   abbreviatedName String
   unit            String
+  showOnOverview  Boolean  @default(true)
   displayDecimals Int      @default(1)
   lowerBound      Float
   upperBound      Float

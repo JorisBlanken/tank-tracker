@@ -16,6 +16,7 @@ type Parameter = {
   fullName: string;
   abbreviatedName: string;
   unit: string;
+  showOnOverview: boolean;
   displayDecimals: number;
   lowerBound: number;
   upperBound: number;
@@ -41,10 +42,23 @@ type NewParameterDraft = {
   upperBound: string;
 };
 
+type UpdateParameterInput = {
+  parameterId: number;
+  fullName?: string;
+  abbreviatedName?: string;
+  unit?: string;
+  showOnOverview?: boolean;
+  displayDecimals?: number;
+  lowerBound?: number;
+  upperBound?: number;
+  displayOrder?: number;
+};
+
 type ParameterSettingsEditorProps = {
   systemId: string;
   initialSystemName: string;
   initialParameters: Parameter[];
+  onSaveComplete?: () => void;
 };
 
 function toDraft(parameter: Parameter): ParameterDraft {
@@ -59,15 +73,40 @@ function toDraft(parameter: Parameter): ParameterDraft {
   };
 }
 
+function normalizeParameter(parameter: Parameter): Parameter {
+  return {
+    ...parameter,
+    fullName: parameter.fullName.trim(),
+    abbreviatedName: parameter.abbreviatedName.trim(),
+    unit: parameter.unit.trim(),
+  };
+}
+
+function parametersEqual(a: Parameter, b: Parameter): boolean {
+  return (
+    a.id === b.id &&
+    a.fullName === b.fullName &&
+    a.abbreviatedName === b.abbreviatedName &&
+    a.unit === b.unit &&
+    a.showOnOverview === b.showOnOverview &&
+    a.displayDecimals === b.displayDecimals &&
+    a.lowerBound === b.lowerBound &&
+    a.upperBound === b.upperBound &&
+    a.displayOrder === b.displayOrder
+  );
+}
+
 export function ParameterSettingsEditor({
   systemId,
   initialSystemName,
   initialParameters,
+  onSaveComplete,
 }: ParameterSettingsEditorProps) {
   const router = useRouter();
   const [systemName, setSystemName] = useState(initialSystemName);
   const [savedSystemName, setSavedSystemName] = useState(initialSystemName);
   const [parameters, setParameters] = useState(initialParameters);
+  const [savedParameters, setSavedParameters] = useState(initialParameters);
   const [editingParameter, setEditingParameter] = useState<ParameterDraft | null>(
     null
   );
@@ -77,45 +116,13 @@ export function ParameterSettingsEditor({
     null
   );
   const [confirmDeleteSystemOpen, setConfirmDeleteSystemOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const utils = api.useUtils();
 
-  const updateName = api.system.updateName.useMutation({
-    onSuccess: async (updatedSystem) => {
-      setSavedSystemName(updatedSystem.name);
-      setSystemName(updatedSystem.name);
-      await utils.system.getById.invalidate({ id: systemId });
-    },
-  });
-
-  const updateParameter = api.system.updateParameter.useMutation({
-    onSuccess: async (updated) => {
-      setParameters((current) =>
-        current.map((parameter) =>
-          parameter.id === updated.id ? { ...parameter, ...updated } : parameter
-        )
-      );
-      await utils.system.getById.invalidate({ id: systemId });
-      setEditingParameter(null);
-    },
-  });
-
-  const createParameter = api.system.createParameter.useMutation({
-    onSuccess: async (created) => {
-      setParameters((current) => [...current, created]);
-      await utils.system.getById.invalidate({ id: systemId });
-    },
-  });
-
-  const deleteParameter = api.system.deleteParameter.useMutation({
-    onSuccess: async ({ id }) => {
-      setParameters((current) => current.filter((parameter) => parameter.id !== id));
-      await utils.system.getById.invalidate({ id: systemId });
-      if (editingParameter?.id === id) {
-        setEditingParameter(null);
-      }
-      setParameterToDelete(null);
-    },
-  });
+  const updateName = api.system.updateName.useMutation();
+  const updateParameter = api.system.updateParameter.useMutation();
+  const createParameter = api.system.createParameter.useMutation();
+  const deleteParameter = api.system.deleteParameter.useMutation();
 
   const deleteSystem = api.system.delete.useMutation({
     onSuccess: async () => {
@@ -125,46 +132,65 @@ export function ParameterSettingsEditor({
     },
   });
 
+  const isBusy =
+    isSaving ||
+    updateName.isPending ||
+    updateParameter.isPending ||
+    createParameter.isPending ||
+    deleteParameter.isPending ||
+    deleteSystem.isPending;
+
   const orderedParameters = useMemo(
     () => [...parameters].sort((a, b) => a.displayOrder - b.displayOrder),
     [parameters]
   );
 
-  const nextParameterDefaults = useMemo(() => {
-    const usedAbbreviations = new Set(parameters.map((p) => p.abbreviatedName));
-    let nextIndex = 1;
-    while (usedAbbreviations.has(`P${nextIndex}`)) {
-      nextIndex += 1;
-    }
+  const savedParameterMap = useMemo(
+    () => new Map(savedParameters.map((parameter) => [parameter.id, parameter])),
+    [savedParameters]
+  );
 
-    return {
-      fullName: `Parameter ${nextIndex}`,
-      abbreviatedName: `P${nextIndex}`,
-      unit: "",
-      displayDecimals: "1",
-      lowerBound: "0",
-      upperBound: "0",
-    } satisfies NewParameterDraft;
-  }, [parameters]);
-
-  const saveSystemName = () => {
+  const hasChanges = useMemo(() => {
     const nextName = systemName.trim();
-    if (!nextName) {
-      setSystemName(savedSystemName);
-      return;
-    }
-
     if (nextName !== savedSystemName) {
-      updateName.mutate({ id: systemId, name: nextName });
+      return true;
     }
 
-    setSystemName(nextName);
-  };
+    if (parameters.length !== savedParameters.length) {
+      return true;
+    }
+
+    const normalizedCurrent = [...parameters]
+      .map(normalizeParameter)
+      .sort((a, b) => a.displayOrder - b.displayOrder || a.id - b.id);
+    const normalizedSaved = [...savedParameters]
+      .map(normalizeParameter)
+      .sort((a, b) => a.displayOrder - b.displayOrder || a.id - b.id);
+
+    return normalizedCurrent.some((parameter, index) => {
+      const previous = normalizedSaved[index];
+      return !previous || !parametersEqual(parameter, previous);
+    });
+  }, [parameters, savedParameters, savedSystemName, systemName]);
+
+  const nextParameterDefaults = useMemo(() => {
+    return {
+      fullName: "",
+      abbreviatedName: "",
+      unit: "ppm",
+      displayDecimals: "",
+      lowerBound: "",
+      upperBound: "",
+    } satisfies NewParameterDraft;
+  }, []);
 
   const saveEditedParameter = () => {
     if (!editingParameter) return;
 
-    const displayDecimals = Number(editingParameter.displayDecimals);
+    const displayDecimals =
+      editingParameter.displayDecimals.trim() === ""
+        ? 0
+        : Number(editingParameter.displayDecimals);
     const lowerBound = Number(editingParameter.lowerBound);
     const upperBound = Number(editingParameter.upperBound);
 
@@ -176,21 +202,31 @@ export function ParameterSettingsEditor({
       return;
     }
 
-    updateParameter.mutate({
-      parameterId: editingParameter.id,
-      fullName: editingParameter.fullName.trim(),
-      abbreviatedName: editingParameter.abbreviatedName.trim(),
-      unit: editingParameter.unit.trim(),
-      displayDecimals,
-      lowerBound,
-      upperBound,
-    });
+    setParameters((current) =>
+      current.map((parameter) =>
+        parameter.id === editingParameter.id
+          ? {
+              ...parameter,
+              fullName: editingParameter.fullName.trim(),
+              abbreviatedName: editingParameter.abbreviatedName.trim(),
+              unit: editingParameter.unit.trim(),
+              displayDecimals,
+              lowerBound,
+              upperBound,
+            }
+          : parameter
+      )
+    );
+    setEditingParameter(null);
   };
 
   const createWithDraft = () => {
     if (!creatingParameter) return;
 
-    const displayDecimals = Number(creatingParameter.displayDecimals);
+    const displayDecimals =
+      creatingParameter.displayDecimals.trim() === ""
+        ? 0
+        : Number(creatingParameter.displayDecimals);
     const lowerBound = Number(creatingParameter.lowerBound);
     const upperBound = Number(creatingParameter.upperBound);
 
@@ -202,22 +238,192 @@ export function ParameterSettingsEditor({
       return;
     }
 
-    createParameter.mutate(
+    const nextId =
+      parameters.reduce(
+        (minId, parameter) => (parameter.id < minId ? parameter.id : minId),
+        0
+      ) - 1;
+    const nextOrder =
+      parameters.reduce(
+        (maxOrder, parameter) =>
+          parameter.displayOrder > maxOrder ? parameter.displayOrder : maxOrder,
+        -1
+      ) + 1;
+
+    setParameters((current) => [
+      ...current,
       {
-        systemId,
+        id: nextId,
         fullName: creatingParameter.fullName.trim(),
         abbreviatedName: creatingParameter.abbreviatedName.trim(),
         unit: creatingParameter.unit.trim(),
+        showOnOverview: true,
         displayDecimals,
         lowerBound,
         upperBound,
+        displayOrder: nextOrder,
       },
-      {
-        onSuccess: () => {
-          setCreatingParameter(null);
-        },
-      }
+    ]);
+    setCreatingParameter(null);
+  };
+
+  const moveParameter = (parameterId: number, direction: "up" | "down") => {
+    const currentOrdered = [...parameters].sort(
+      (a, b) => a.displayOrder - b.displayOrder
     );
+    const currentIndex = currentOrdered.findIndex(
+      (parameter) => parameter.id === parameterId
+    );
+    if (currentIndex < 0) return;
+
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= currentOrdered.length) return;
+
+    const current = currentOrdered[currentIndex];
+    const target = currentOrdered[targetIndex];
+    if (!current || !target) return;
+
+    setParameters((prev) =>
+      prev.map((parameter) => {
+        if (parameter.id === current.id) {
+          return { ...parameter, displayOrder: target.displayOrder };
+        }
+        if (parameter.id === target.id) {
+          return { ...parameter, displayOrder: current.displayOrder };
+        }
+        return parameter;
+      })
+    );
+  };
+
+  const toggleOverviewVisibility = (parameter: Parameter) => {
+    setParameters((current) =>
+      current.map((item) =>
+        item.id === parameter.id
+          ? { ...item, showOnOverview: !item.showOnOverview }
+          : item
+      )
+    );
+  };
+
+  const saveChanges = async () => {
+    if (isSaving) return;
+
+    const nextName = systemName.trim();
+    if (!nextName) {
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      if (nextName !== savedSystemName) {
+        await updateName.mutateAsync({ id: systemId, name: nextName });
+      }
+
+      const savedIds = new Set(savedParameters.map((parameter) => parameter.id));
+      const currentPersistedIds = new Set(
+        parameters.filter((parameter) => parameter.id > 0).map((parameter) => parameter.id)
+      );
+
+      for (const oldParameter of savedParameters) {
+        if (!currentPersistedIds.has(oldParameter.id)) {
+          await deleteParameter.mutateAsync({ parameterId: oldParameter.id });
+        }
+      }
+
+      let persistedParameters = [...parameters];
+
+      for (const parameter of parameters.filter((item) => item.id > 0)) {
+        const previous = savedParameterMap.get(parameter.id);
+        if (!previous) {
+          continue;
+        }
+
+        const normalizedCurrent = normalizeParameter(parameter);
+        const normalizedPrevious = normalizeParameter(previous);
+        const payload: UpdateParameterInput = { parameterId: parameter.id };
+
+        if (normalizedCurrent.fullName !== normalizedPrevious.fullName) {
+          payload.fullName = normalizedCurrent.fullName;
+        }
+        if (
+          normalizedCurrent.abbreviatedName !== normalizedPrevious.abbreviatedName
+        ) {
+          payload.abbreviatedName = normalizedCurrent.abbreviatedName;
+        }
+        if (normalizedCurrent.unit !== normalizedPrevious.unit) {
+          payload.unit = normalizedCurrent.unit;
+        }
+        if (
+          normalizedCurrent.showOnOverview !== normalizedPrevious.showOnOverview
+        ) {
+          payload.showOnOverview = normalizedCurrent.showOnOverview;
+        }
+        if (
+          normalizedCurrent.displayDecimals !== normalizedPrevious.displayDecimals
+        ) {
+          payload.displayDecimals = normalizedCurrent.displayDecimals;
+        }
+        if (normalizedCurrent.lowerBound !== normalizedPrevious.lowerBound) {
+          payload.lowerBound = normalizedCurrent.lowerBound;
+        }
+        if (normalizedCurrent.upperBound !== normalizedPrevious.upperBound) {
+          payload.upperBound = normalizedCurrent.upperBound;
+        }
+        if (normalizedCurrent.displayOrder !== normalizedPrevious.displayOrder) {
+          payload.displayOrder = normalizedCurrent.displayOrder;
+        }
+
+        if (Object.keys(payload).length > 1) {
+          const updated = await updateParameter.mutateAsync(payload);
+          persistedParameters = persistedParameters.map((item) =>
+            item.id === updated.id ? { ...item, ...updated } : item
+          );
+        }
+      }
+
+      for (const parameter of parameters.filter((item) => item.id <= 0)) {
+        const created = await createParameter.mutateAsync({
+          systemId,
+          fullName: parameter.fullName.trim(),
+          abbreviatedName: parameter.abbreviatedName.trim(),
+          unit: parameter.unit.trim(),
+          showOnOverview: parameter.showOnOverview,
+          displayDecimals: parameter.displayDecimals,
+          lowerBound: parameter.lowerBound,
+          upperBound: parameter.upperBound,
+        });
+
+        persistedParameters = persistedParameters.map((item) =>
+          item.id === parameter.id ? created : item
+        );
+      }
+
+      const nextSavedParameters = persistedParameters
+        .filter((parameter) => parameter.id > 0 || !savedIds.has(parameter.id))
+        .sort((a, b) => a.displayOrder - b.displayOrder);
+
+      setSystemName(nextName);
+      setSavedSystemName(nextName);
+      setParameters(nextSavedParameters);
+      setSavedParameters(nextSavedParameters);
+
+      await utils.system.getById.invalidate({ id: systemId });
+      await utils.system.listMine.invalidate();
+      router.refresh();
+      onSaveComplete?.();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const cancelChanges = () => {
+    setSystemName(savedSystemName);
+    setParameters(savedParameters);
+    setEditingParameter(null);
+    setCreatingParameter(null);
+    setParameterToDelete(null);
   };
 
   return (
@@ -228,12 +434,7 @@ export function ParameterSettingsEditor({
           value={systemName}
           className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-base text-slate-900"
           onChange={(event) => setSystemName(event.target.value)}
-          onBlur={saveSystemName}
           onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              saveSystemName();
-            }
             if (event.key === "Escape") {
               setSystemName(savedSystemName);
             }
@@ -241,32 +442,110 @@ export function ParameterSettingsEditor({
         />
       </label>
 
-      <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-slate-900">Parameters</h2>
           <button
             type="button"
             onClick={() => setCreatingParameter(nextParameterDefaults)}
-            disabled={createParameter.isPending}
-            className="px-0 py-0 text-sm font-semibold text-slate-700"
+            disabled={isBusy}
+            className="rounded-md p-1 text-slate-700 disabled:opacity-40"
             aria-label="Add parameter"
           >
-            +
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              viewBox="0 -960 960 960"
+              width="24"
+              fill="currentColor"
+            >
+              <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+            </svg>
           </button>
         </div>
 
-        <div className="mt-1">
-          {orderedParameters.map((parameter) => (
-            <div
-              key={parameter.id}
-              className="flex items-center justify-between border-b border-slate-200 py-2 last:border-b-0"
-            >
-              <p className="text-sm text-slate-900">{parameter.fullName}</p>
-              <div className="flex items-center gap-2">
+        <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+
+          <div className="mt-1">
+            {orderedParameters.map((parameter, index) => (
+              <div
+                key={parameter.id}
+                className="flex items-center justify-between border-b border-slate-200 py-2 last:border-b-0"
+              >
+                <p className="text-sm text-slate-900">{parameter.fullName}</p>
+                <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => moveParameter(parameter.id, "up")}
+                  disabled={isBusy || index === 0}
+                  className="rounded-md p-1 text-slate-700 disabled:opacity-40"
+                  aria-label={`Move ${parameter.fullName} up`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24"
+                    viewBox="0 -960 960 960"
+                    width="24"
+                    fill="currentColor"
+                  >
+                    <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveParameter(parameter.id, "down")}
+                  disabled={isBusy || index === orderedParameters.length - 1}
+                  className="rounded-md p-1 text-slate-700 disabled:opacity-40"
+                  aria-label={`Move ${parameter.fullName} down`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24"
+                    viewBox="0 -960 960 960"
+                    width="24"
+                    fill="currentColor"
+                  >
+                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => toggleOverviewVisibility(parameter)}
+                  disabled={isBusy}
+                  className="rounded-md p-1 text-slate-700 disabled:opacity-40"
+                  aria-label={
+                    parameter.showOnOverview
+                      ? `Hide ${parameter.fullName} on overview`
+                      : `Show ${parameter.fullName} on overview`
+                  }
+                >
+                  {parameter.showOnOverview ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24"
+                      viewBox="0 -960 960 960"
+                      width="24"
+                      fill="currentColor"
+                    >
+                      <path d="M607.5-372.5Q660-425 660-500t-52.5-127.5Q555-680 480-680t-127.5 52.5Q300-575 300-500t52.5 127.5Q405-320 480-320t127.5-52.5Zm-204-51Q372-455 372-500t31.5-76.5Q435-608 480-608t76.5 31.5Q588-545 588-500t-31.5 76.5Q525-392 480-392t-76.5-31.5ZM214-281.5Q94-363 40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200q-146 0-266-81.5ZM480-500Zm207.5 160.5Q782-399 832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280q113 0 207.5-59.5Z" />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24"
+                      viewBox="0 -960 960 960"
+                      width="24"
+                      fill="currentColor"
+                    >
+                      <path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z" />
+                    </svg>
+                  )}
+                </button>
                 <button
                   type="button"
                   onClick={() => setEditingParameter(toDraft(parameter))}
-                  className="rounded-md p-1 text-slate-700"
+                  disabled={isBusy}
+                  className="rounded-md p-1 text-slate-700 disabled:opacity-40"
                   aria-label={`Edit ${parameter.fullName}`}
                 >
                   <svg
@@ -282,8 +561,8 @@ export function ParameterSettingsEditor({
                 <button
                   type="button"
                   onClick={() => setParameterToDelete(parameter)}
-                  disabled={deleteParameter.isPending}
-                  className="rounded-md p-1 text-slate-700"
+                  disabled={isBusy}
+                  className="rounded-md p-1 text-slate-700 disabled:opacity-40"
                   aria-label={`Delete ${parameter.fullName}`}
                 >
                   <svg
@@ -296,20 +575,50 @@ export function ParameterSettingsEditor({
                     <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
                   </svg>
                 </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <section className="pt-1">
+        <details>
+          <summary className="cursor-pointer text-sm font-semibold text-slate-700">
+            Danger Zone
+          </summary>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => setConfirmDeleteSystemOpen(true)}
+              disabled={isBusy}
+              className="w-full rounded-lg border border-red-700 bg-red-700 px-4 py-2 text-sm font-semibold text-slate-50 disabled:opacity-50"
+            >
+              Delete System
+            </button>
+          </div>
+        </details>
       </section>
 
       <section className="pt-2">
-        <button
-          type="button"
-          onClick={() => setConfirmDeleteSystemOpen(true)}
-          className="w-full rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50"
-        >
-          Delete System
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={cancelChanges}
+            disabled={isBusy}
+            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={saveChanges}
+            disabled={isBusy || !hasChanges || systemName.trim().length === 0}
+            className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50 disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
       </section>
 
       <Transition appear show={editingParameter !== null} as={Fragment}>
@@ -474,10 +783,9 @@ export function ParameterSettingsEditor({
                       <button
                         type="button"
                         onClick={saveEditedParameter}
-                        disabled={updateParameter.isPending}
-                        className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50 disabled:opacity-50"
+                        className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50"
                       >
-                        {updateParameter.isPending ? "Saving..." : "Save"}
+                        Save
                       </button>
                     </div>
                   </div>
@@ -530,6 +838,7 @@ export function ParameterSettingsEditor({
                         </span>
                         <input
                           value={creatingParameter?.fullName ?? ""}
+                          placeholder="Calcium"
                           className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                           onChange={(event) =>
                             setCreatingParameter((current) =>
@@ -547,6 +856,7 @@ export function ParameterSettingsEditor({
                         </span>
                         <input
                           value={creatingParameter?.abbreviatedName ?? ""}
+                          placeholder="Ca"
                           className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
                           onChange={(event) =>
                             setCreatingParameter((current) =>
@@ -652,10 +962,9 @@ export function ParameterSettingsEditor({
                       <button
                         type="button"
                         onClick={createWithDraft}
-                        disabled={createParameter.isPending}
-                        className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50 disabled:opacity-50"
+                        className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50"
                       >
-                        {createParameter.isPending ? "Creating..." : "Create"}
+                        Create
                       </button>
                     </div>
                   </div>
@@ -713,16 +1022,21 @@ export function ParameterSettingsEditor({
                       </button>
                       <button
                         type="button"
-                        onClick={() =>
-                          parameterToDelete &&
-                          deleteParameter.mutate({
-                            parameterId: parameterToDelete.id,
-                          })
-                        }
-                        disabled={deleteParameter.isPending}
-                        className="flex-1 rounded-lg border border-red-700 bg-red-700 px-4 py-2 text-sm font-semibold text-slate-50 disabled:opacity-50"
+                        onClick={() => {
+                          if (!parameterToDelete) return;
+                          setParameters((current) =>
+                            current.filter(
+                              (parameter) => parameter.id !== parameterToDelete.id
+                            )
+                          );
+                          if (editingParameter?.id === parameterToDelete.id) {
+                            setEditingParameter(null);
+                          }
+                          setParameterToDelete(null);
+                        }}
+                        className="flex-1 rounded-lg border border-red-700 bg-red-700 px-4 py-2 text-sm font-semibold text-slate-50"
                       >
-                        {deleteParameter.isPending ? "Deleting..." : "Delete"}
+                        Delete
                       </button>
                     </div>
                   </div>
