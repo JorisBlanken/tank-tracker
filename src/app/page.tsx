@@ -37,7 +37,7 @@ export default async function Home() {
 
   for (const system of systems) {
     if (system.createdBy.id === ownOwnerId) continue;
-    const ownerName = system.createdBy.name?.trim() || "Unknown";
+    const ownerName = system.createdBy.name?.trim() ?? "Unknown";
     const existing = otherSystemsByOwner.get(system.createdBy.id);
     if (existing) {
       existing.systems.push(system);

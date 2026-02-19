@@ -10,17 +10,10 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { formatRelativeDateTime } from "~/lib/date-display";
 import { type RouterOutputs, api } from "~/trpc/react";
 
-type FilterMediaItem = RouterOutputs["system"]["getFilterMedia"][number];
-
 type FilterMediaSectionProps = {
   systemId: string;
   initialItems: RouterOutputs["system"]["getById"]["filterMedia"];
 };
-
-function getTodayDate() {
-  const date = new Date();
-  return date.toISOString().slice(0, 10);
-}
 
 function getNowLocalDateTime() {
   const date = new Date();

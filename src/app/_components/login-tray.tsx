@@ -50,7 +50,7 @@ export function LoginTray() {
     }
 
     setIsLoadingProviders(true);
-    getProviders()
+    void getProviders()
       .then((result) => {
         setProviders(result ?? null);
       })
@@ -103,7 +103,9 @@ export function LoginTray() {
                             <button
                               key={provider.id}
                               type="button"
-                              onClick={() => signIn(provider.id, { callbackUrl: "/" })}
+                              onClick={() =>
+                                void signIn(provider.id, { callbackUrl: "/" })
+                              }
                               className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-800"
                             >
                               <ProviderLogo providerId={provider.id} />
