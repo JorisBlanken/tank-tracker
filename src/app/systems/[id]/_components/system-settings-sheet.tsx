@@ -22,16 +22,23 @@ type SettingsParameter = {
   displayOrder: number;
 };
 
+type SettingsSharedAccess = {
+  id: number;
+  email: string;
+};
+
 type SystemSettingsSheetProps = {
   systemId: string;
   systemName: string;
   parameters: SettingsParameter[];
+  sharedAccess: SettingsSharedAccess[];
 };
 
 export function SystemSettingsSheet({
   systemId,
   systemName,
   parameters,
+  sharedAccess,
 }: SystemSettingsSheetProps) {
   const [open, setOpen] = useState(false);
 
@@ -83,6 +90,7 @@ export function SystemSettingsSheet({
                       systemId={systemId}
                       initialSystemName={systemName}
                       initialParameters={parameters}
+                      initialSharedAccess={sharedAccess}
                       onSaveComplete={() => setOpen(false)}
                     />
                   </div>

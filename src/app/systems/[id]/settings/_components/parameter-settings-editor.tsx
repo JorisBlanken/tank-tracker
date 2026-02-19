@@ -54,10 +54,16 @@ type UpdateParameterInput = {
   displayOrder?: number;
 };
 
+type SharedAccessEntry = {
+  id: number;
+  email: string;
+};
+
 type ParameterSettingsEditorProps = {
   systemId: string;
   initialSystemName: string;
   initialParameters: Parameter[];
+  initialSharedAccess: SharedAccessEntry[];
   onSaveComplete?: () => void;
 };
 
@@ -100,6 +106,7 @@ export function ParameterSettingsEditor({
   systemId,
   initialSystemName,
   initialParameters,
+  initialSharedAccess,
   onSaveComplete,
 }: ParameterSettingsEditorProps) {
   const router = useRouter();
@@ -107,6 +114,10 @@ export function ParameterSettingsEditor({
   const [savedSystemName, setSavedSystemName] = useState(initialSystemName);
   const [parameters, setParameters] = useState(initialParameters);
   const [savedParameters, setSavedParameters] = useState(initialParameters);
+  const [sharedAccess, setSharedAccess] = useState(initialSharedAccess);
+  const [savedSharedAccess, setSavedSharedAccess] = useState(initialSharedAccess);
+  const [shareEmailInput, setShareEmailInput] = useState("");
+  const [shareInputError, setShareInputError] = useState<string | null>(null);
   const [editingParameter, setEditingParameter] = useState<ParameterDraft | null>(
     null
   );
@@ -123,6 +134,8 @@ export function ParameterSettingsEditor({
   const updateParameter = api.system.updateParameter.useMutation();
   const createParameter = api.system.createParameter.useMutation();
   const deleteParameter = api.system.deleteParameter.useMutation();
+  const addSharedAccess = api.system.addSharedAccess.useMutation();
+  const removeSharedAccess = api.system.removeSharedAccess.useMutation();
 
   const deleteSystem = api.system.delete.useMutation({
     onSuccess: async () => {
@@ -138,6 +151,8 @@ export function ParameterSettingsEditor({
     updateParameter.isPending ||
     createParameter.isPending ||
     deleteParameter.isPending ||
+    addSharedAccess.isPending ||
+    removeSharedAccess.isPending ||
     deleteSystem.isPending;
 
   const orderedParameters = useMemo(
@@ -160,6 +175,21 @@ export function ParameterSettingsEditor({
       return true;
     }
 
+    const currentEmails = [...sharedAccess]
+      .map((entry) => entry.email.toLowerCase())
+      .sort();
+    const savedEmails = [...savedSharedAccess]
+      .map((entry) => entry.email.toLowerCase())
+      .sort();
+
+    if (currentEmails.length !== savedEmails.length) {
+      return true;
+    }
+
+    if (currentEmails.some((email, index) => email !== savedEmails[index])) {
+      return true;
+    }
+
     const normalizedCurrent = [...parameters]
       .map(normalizeParameter)
       .sort((a, b) => a.displayOrder - b.displayOrder || a.id - b.id);
@@ -171,7 +201,14 @@ export function ParameterSettingsEditor({
       const previous = normalizedSaved[index];
       return !previous || !parametersEqual(parameter, previous);
     });
-  }, [parameters, savedParameters, savedSystemName, systemName]);
+  }, [
+    parameters,
+    savedParameters,
+    savedSharedAccess,
+    savedSystemName,
+    sharedAccess,
+    systemName,
+  ]);
 
   const nextParameterDefaults = useMemo(() => {
     return {
@@ -306,6 +343,48 @@ export function ParameterSettingsEditor({
     );
   };
 
+  const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const addSharedAccessDraft = () => {
+    const normalizedEmail = normalizeEmail(shareEmailInput);
+    if (!isValidEmail(normalizedEmail)) {
+      setShareInputError("Please enter a valid email address.");
+      return;
+    }
+
+    if (
+      sharedAccess.some(
+        (entry) => entry.email.toLowerCase() === normalizedEmail
+      )
+    ) {
+      setShareInputError("This email already has access.");
+      return;
+    }
+
+    const nextId =
+      sharedAccess.reduce(
+        (minId, entry) => (entry.id < minId ? entry.id : minId),
+        0
+      ) - 1;
+
+    setSharedAccess((current) => [
+      ...current,
+      {
+        id: nextId,
+        email: normalizedEmail,
+      },
+    ]);
+    setShareEmailInput("");
+    setShareInputError(null);
+  };
+
+  const removeSharedAccessDraft = (accessId: number) => {
+    setSharedAccess((current) => current.filter((entry) => entry.id !== accessId));
+    setShareInputError(null);
+  };
+
   const saveChanges = async () => {
     if (isSaving) return;
 
@@ -404,10 +483,44 @@ export function ParameterSettingsEditor({
         .filter((parameter) => parameter.id > 0 || !savedIds.has(parameter.id))
         .sort((a, b) => a.displayOrder - b.displayOrder);
 
+      const currentEmailSet = new Set(
+        sharedAccess.map((entry) => entry.email.toLowerCase())
+      );
+      const savedEmailSet = new Set(
+        savedSharedAccess.map((entry) => entry.email.toLowerCase())
+      );
+
+      for (const savedEntry of savedSharedAccess) {
+        if (!currentEmailSet.has(savedEntry.email.toLowerCase())) {
+          await removeSharedAccess.mutateAsync({ accessId: savedEntry.id });
+        }
+      }
+
+      let persistedSharedAccess = [...sharedAccess];
+      for (const entry of sharedAccess) {
+        if (!savedEmailSet.has(entry.email.toLowerCase())) {
+          const created = await addSharedAccess.mutateAsync({
+            systemId,
+            email: entry.email,
+          });
+          persistedSharedAccess = persistedSharedAccess.map((current) =>
+            current.id === entry.id ? created : current
+          );
+        }
+      }
+
+      const nextSavedSharedAccess = persistedSharedAccess
+        .filter((entry) => entry.id > 0)
+        .sort((a, b) => a.email.localeCompare(b.email));
+
       setSystemName(nextName);
       setSavedSystemName(nextName);
       setParameters(nextSavedParameters);
       setSavedParameters(nextSavedParameters);
+      setSharedAccess(nextSavedSharedAccess);
+      setSavedSharedAccess(nextSavedSharedAccess);
+      setShareEmailInput("");
+      setShareInputError(null);
 
       await utils.system.getById.invalidate({ id: systemId });
       await utils.system.listMine.invalidate();
@@ -421,6 +534,9 @@ export function ParameterSettingsEditor({
   const cancelChanges = () => {
     setSystemName(savedSystemName);
     setParameters(savedParameters);
+    setSharedAccess(savedSharedAccess);
+    setShareEmailInput("");
+    setShareInputError(null);
     setEditingParameter(null);
     setCreatingParameter(null);
     setParameterToDelete(null);
@@ -441,6 +557,72 @@ export function ParameterSettingsEditor({
           }}
         />
       </label>
+
+      <div className="flex flex-col gap-1">
+        <h2 className="text-sm font-semibold text-slate-900">Share access</h2>
+        <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={shareEmailInput}
+              onChange={(event) => {
+                setShareEmailInput(event.target.value);
+                setShareInputError(null);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  addSharedAccessDraft();
+                }
+              }}
+              placeholder="friend@example.com"
+              className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
+            />
+            <button
+              type="button"
+              onClick={addSharedAccessDraft}
+              disabled={isBusy}
+              className="rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            >
+              Add
+            </button>
+          </div>
+          {shareInputError && (
+            <p className="mt-2 text-xs text-red-700">{shareInputError}</p>
+          )}
+          <ul className="mt-3 flex flex-col gap-2">
+            {sharedAccess.length === 0 ? (
+              <li className="text-sm text-slate-600">No shared users yet.</li>
+            ) : (
+              sharedAccess.map((entry) => (
+                <li
+                  key={entry.id}
+                  className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2"
+                >
+                  <span className="text-sm text-slate-800">{entry.email}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeSharedAccessDraft(entry.id)}
+                    disabled={isBusy}
+                    className="rounded-md p-1 text-slate-700 disabled:opacity-40"
+                    aria-label={`Remove ${entry.email}`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20"
+                      viewBox="0 -960 960 960"
+                      width="20"
+                      fill="currentColor"
+                    >
+                      <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                    </svg>
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        </section>
+      </div>
 
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">

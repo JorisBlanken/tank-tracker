@@ -130,6 +130,14 @@ exports.Prisma.SystemScalarFieldEnum = {
   createdById: 'createdById'
 };
 
+exports.Prisma.SystemSharedAccessScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  systemId: 'systemId'
+};
+
 exports.Prisma.FilterMediaScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -241,6 +249,7 @@ exports.SystemActivityType = exports.$Enums.SystemActivityType = {
 
 exports.Prisma.ModelName = {
   System: 'System',
+  SystemSharedAccess: 'SystemSharedAccess',
   FilterMedia: 'FilterMedia',
   SystemActivity: 'SystemActivity',
   SystemParameter: 'SystemParameter',

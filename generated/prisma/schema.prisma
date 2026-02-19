@@ -25,13 +25,27 @@ model System {
   createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
 
-  parameters  SystemParameter[]
-  activities  SystemActivity[]
-  filterMedia FilterMedia[]
+  parameters     SystemParameter[]
+  activities     SystemActivity[]
+  filterMedia    FilterMedia[]
+  sharedAccesses SystemSharedAccess[]
 
   @@index([createdById])
   @@index([createdById, displayOrder])
   @@index([name])
+}
+
+model SystemSharedAccess {
+  id        Int      @id @default(autoincrement())
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  system   System @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  systemId String
+
+  @@unique([systemId, email])
+  @@index([systemId, email])
 }
 
 model FilterMedia {

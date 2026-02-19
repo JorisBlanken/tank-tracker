@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ParameterSettingsEditor } from "~/app/systems/[id]/settings/_components/parameter-settings-editor";
+import { auth } from "~/server/auth";
 import { api } from "~/trpc/server";
 
 type SystemSettingsPageProps = {
@@ -14,12 +15,17 @@ export default async function SystemSettingsPage({
   params,
 }: SystemSettingsPageProps) {
   const { id } = await params;
+  const session = await auth();
 
   let system: Awaited<ReturnType<typeof api.system.getById>>;
 
   try {
     system = await api.system.getById({ id });
   } catch {
+    notFound();
+  }
+
+  if (session?.user.id !== system.createdById) {
     notFound();
   }
 
@@ -52,6 +58,7 @@ export default async function SystemSettingsPage({
           systemId={system.id}
           initialSystemName={system.name}
           initialParameters={system.parameters}
+          initialSharedAccess={system.sharedAccesses}
         />
       </div>
     </main>

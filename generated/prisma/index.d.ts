@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type System = $Result.DefaultSelection<Prisma.$SystemPayload>
 /**
+ * Model SystemSharedAccess
+ * 
+ */
+export type SystemSharedAccess = $Result.DefaultSelection<Prisma.$SystemSharedAccessPayload>
+/**
  * Model FilterMedia
  * 
  */
@@ -209,6 +214,16 @@ export class PrismaClient<
     * ```
     */
   get system(): Prisma.SystemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.systemSharedAccess`: Exposes CRUD operations for the **SystemSharedAccess** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemSharedAccesses
+    * const systemSharedAccesses = await prisma.systemSharedAccess.findMany()
+    * ```
+    */
+  get systemSharedAccess(): Prisma.SystemSharedAccessDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.filterMedia`: Exposes CRUD operations for the **FilterMedia** model.
@@ -731,6 +746,7 @@ export namespace Prisma {
 
   export const ModelName: {
     System: 'System',
+    SystemSharedAccess: 'SystemSharedAccess',
     FilterMedia: 'FilterMedia',
     SystemActivity: 'SystemActivity',
     SystemParameter: 'SystemParameter',
@@ -757,7 +773,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "system" | "filterMedia" | "systemActivity" | "systemParameter" | "systemParameterLog" | "account" | "session" | "user" | "verificationToken"
+      modelProps: "system" | "systemSharedAccess" | "filterMedia" | "systemActivity" | "systemParameter" | "systemParameterLog" | "account" | "session" | "user" | "verificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -832,6 +848,80 @@ export namespace Prisma {
           count: {
             args: Prisma.SystemCountArgs<ExtArgs>
             result: $Utils.Optional<SystemCountAggregateOutputType> | number
+          }
+        }
+      }
+      SystemSharedAccess: {
+        payload: Prisma.$SystemSharedAccessPayload<ExtArgs>
+        fields: Prisma.SystemSharedAccessFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SystemSharedAccessFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SystemSharedAccessFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>
+          }
+          findFirst: {
+            args: Prisma.SystemSharedAccessFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SystemSharedAccessFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>
+          }
+          findMany: {
+            args: Prisma.SystemSharedAccessFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>[]
+          }
+          create: {
+            args: Prisma.SystemSharedAccessCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>
+          }
+          createMany: {
+            args: Prisma.SystemSharedAccessCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SystemSharedAccessCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>[]
+          }
+          delete: {
+            args: Prisma.SystemSharedAccessDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>
+          }
+          update: {
+            args: Prisma.SystemSharedAccessUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>
+          }
+          deleteMany: {
+            args: Prisma.SystemSharedAccessDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SystemSharedAccessUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SystemSharedAccessUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>[]
+          }
+          upsert: {
+            args: Prisma.SystemSharedAccessUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSharedAccessPayload>
+          }
+          aggregate: {
+            args: Prisma.SystemSharedAccessAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSystemSharedAccess>
+          }
+          groupBy: {
+            args: Prisma.SystemSharedAccessGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SystemSharedAccessGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SystemSharedAccessCountArgs<ExtArgs>
+            result: $Utils.Optional<SystemSharedAccessCountAggregateOutputType> | number
           }
         }
       }
@@ -1524,6 +1614,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     system?: SystemOmit
+    systemSharedAccess?: SystemSharedAccessOmit
     filterMedia?: FilterMediaOmit
     systemActivity?: SystemActivityOmit
     systemParameter?: SystemParameterOmit
@@ -1615,12 +1706,14 @@ export namespace Prisma {
     parameters: number
     activities: number
     filterMedia: number
+    sharedAccesses: number
   }
 
   export type SystemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parameters?: boolean | SystemCountOutputTypeCountParametersArgs
     activities?: boolean | SystemCountOutputTypeCountActivitiesArgs
     filterMedia?: boolean | SystemCountOutputTypeCountFilterMediaArgs
+    sharedAccesses?: boolean | SystemCountOutputTypeCountSharedAccessesArgs
   }
 
   // Custom InputTypes
@@ -1653,6 +1746,13 @@ export namespace Prisma {
    */
   export type SystemCountOutputTypeCountFilterMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FilterMediaWhereInput
+  }
+
+  /**
+   * SystemCountOutputType without action
+   */
+  export type SystemCountOutputTypeCountSharedAccessesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemSharedAccessWhereInput
   }
 
 
@@ -1959,6 +2059,7 @@ export namespace Prisma {
     parameters?: boolean | System$parametersArgs<ExtArgs>
     activities?: boolean | System$activitiesArgs<ExtArgs>
     filterMedia?: boolean | System$filterMediaArgs<ExtArgs>
+    sharedAccesses?: boolean | System$sharedAccessesArgs<ExtArgs>
     _count?: boolean | SystemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["system"]>
 
@@ -1997,6 +2098,7 @@ export namespace Prisma {
     parameters?: boolean | System$parametersArgs<ExtArgs>
     activities?: boolean | System$activitiesArgs<ExtArgs>
     filterMedia?: boolean | System$filterMediaArgs<ExtArgs>
+    sharedAccesses?: boolean | System$sharedAccessesArgs<ExtArgs>
     _count?: boolean | SystemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SystemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2013,6 +2115,7 @@ export namespace Prisma {
       parameters: Prisma.$SystemParameterPayload<ExtArgs>[]
       activities: Prisma.$SystemActivityPayload<ExtArgs>[]
       filterMedia: Prisma.$FilterMediaPayload<ExtArgs>[]
+      sharedAccesses: Prisma.$SystemSharedAccessPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2419,6 +2522,7 @@ export namespace Prisma {
     parameters<T extends System$parametersArgs<ExtArgs> = {}>(args?: Subset<T, System$parametersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemParameterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     activities<T extends System$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, System$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     filterMedia<T extends System$filterMediaArgs<ExtArgs> = {}>(args?: Subset<T, System$filterMediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilterMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sharedAccesses<T extends System$sharedAccessesArgs<ExtArgs> = {}>(args?: Subset<T, System$sharedAccessesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2922,6 +3026,30 @@ export namespace Prisma {
   }
 
   /**
+   * System.sharedAccesses
+   */
+  export type System$sharedAccessesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    where?: SystemSharedAccessWhereInput
+    orderBy?: SystemSharedAccessOrderByWithRelationInput | SystemSharedAccessOrderByWithRelationInput[]
+    cursor?: SystemSharedAccessWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SystemSharedAccessScalarFieldEnum | SystemSharedAccessScalarFieldEnum[]
+  }
+
+  /**
    * System without action
    */
   export type SystemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2937,6 +3065,1098 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: SystemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SystemSharedAccess
+   */
+
+  export type AggregateSystemSharedAccess = {
+    _count: SystemSharedAccessCountAggregateOutputType | null
+    _avg: SystemSharedAccessAvgAggregateOutputType | null
+    _sum: SystemSharedAccessSumAggregateOutputType | null
+    _min: SystemSharedAccessMinAggregateOutputType | null
+    _max: SystemSharedAccessMaxAggregateOutputType | null
+  }
+
+  export type SystemSharedAccessAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SystemSharedAccessSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SystemSharedAccessMinAggregateOutputType = {
+    id: number | null
+    email: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    systemId: string | null
+  }
+
+  export type SystemSharedAccessMaxAggregateOutputType = {
+    id: number | null
+    email: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    systemId: string | null
+  }
+
+  export type SystemSharedAccessCountAggregateOutputType = {
+    id: number
+    email: number
+    createdAt: number
+    updatedAt: number
+    systemId: number
+    _all: number
+  }
+
+
+  export type SystemSharedAccessAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SystemSharedAccessSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SystemSharedAccessMinAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    updatedAt?: true
+    systemId?: true
+  }
+
+  export type SystemSharedAccessMaxAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    updatedAt?: true
+    systemId?: true
+  }
+
+  export type SystemSharedAccessCountAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    updatedAt?: true
+    systemId?: true
+    _all?: true
+  }
+
+  export type SystemSharedAccessAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemSharedAccess to aggregate.
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSharedAccesses to fetch.
+     */
+    orderBy?: SystemSharedAccessOrderByWithRelationInput | SystemSharedAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SystemSharedAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSharedAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSharedAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SystemSharedAccesses
+    **/
+    _count?: true | SystemSharedAccessCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SystemSharedAccessAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SystemSharedAccessSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SystemSharedAccessMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SystemSharedAccessMaxAggregateInputType
+  }
+
+  export type GetSystemSharedAccessAggregateType<T extends SystemSharedAccessAggregateArgs> = {
+        [P in keyof T & keyof AggregateSystemSharedAccess]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSystemSharedAccess[P]>
+      : GetScalarType<T[P], AggregateSystemSharedAccess[P]>
+  }
+
+
+
+
+  export type SystemSharedAccessGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemSharedAccessWhereInput
+    orderBy?: SystemSharedAccessOrderByWithAggregationInput | SystemSharedAccessOrderByWithAggregationInput[]
+    by: SystemSharedAccessScalarFieldEnum[] | SystemSharedAccessScalarFieldEnum
+    having?: SystemSharedAccessScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SystemSharedAccessCountAggregateInputType | true
+    _avg?: SystemSharedAccessAvgAggregateInputType
+    _sum?: SystemSharedAccessSumAggregateInputType
+    _min?: SystemSharedAccessMinAggregateInputType
+    _max?: SystemSharedAccessMaxAggregateInputType
+  }
+
+  export type SystemSharedAccessGroupByOutputType = {
+    id: number
+    email: string
+    createdAt: Date
+    updatedAt: Date
+    systemId: string
+    _count: SystemSharedAccessCountAggregateOutputType | null
+    _avg: SystemSharedAccessAvgAggregateOutputType | null
+    _sum: SystemSharedAccessSumAggregateOutputType | null
+    _min: SystemSharedAccessMinAggregateOutputType | null
+    _max: SystemSharedAccessMaxAggregateOutputType | null
+  }
+
+  type GetSystemSharedAccessGroupByPayload<T extends SystemSharedAccessGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SystemSharedAccessGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SystemSharedAccessGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SystemSharedAccessGroupByOutputType[P]>
+            : GetScalarType<T[P], SystemSharedAccessGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SystemSharedAccessSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    systemId?: boolean
+    system?: boolean | SystemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSharedAccess"]>
+
+  export type SystemSharedAccessSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    systemId?: boolean
+    system?: boolean | SystemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSharedAccess"]>
+
+  export type SystemSharedAccessSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    systemId?: boolean
+    system?: boolean | SystemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSharedAccess"]>
+
+  export type SystemSharedAccessSelectScalar = {
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    systemId?: boolean
+  }
+
+  export type SystemSharedAccessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "createdAt" | "updatedAt" | "systemId", ExtArgs["result"]["systemSharedAccess"]>
+  export type SystemSharedAccessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    system?: boolean | SystemDefaultArgs<ExtArgs>
+  }
+  export type SystemSharedAccessIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    system?: boolean | SystemDefaultArgs<ExtArgs>
+  }
+  export type SystemSharedAccessIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    system?: boolean | SystemDefaultArgs<ExtArgs>
+  }
+
+  export type $SystemSharedAccessPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SystemSharedAccess"
+    objects: {
+      system: Prisma.$SystemPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      email: string
+      createdAt: Date
+      updatedAt: Date
+      systemId: string
+    }, ExtArgs["result"]["systemSharedAccess"]>
+    composites: {}
+  }
+
+  type SystemSharedAccessGetPayload<S extends boolean | null | undefined | SystemSharedAccessDefaultArgs> = $Result.GetResult<Prisma.$SystemSharedAccessPayload, S>
+
+  type SystemSharedAccessCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SystemSharedAccessFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SystemSharedAccessCountAggregateInputType | true
+    }
+
+  export interface SystemSharedAccessDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SystemSharedAccess'], meta: { name: 'SystemSharedAccess' } }
+    /**
+     * Find zero or one SystemSharedAccess that matches the filter.
+     * @param {SystemSharedAccessFindUniqueArgs} args - Arguments to find a SystemSharedAccess
+     * @example
+     * // Get one SystemSharedAccess
+     * const systemSharedAccess = await prisma.systemSharedAccess.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SystemSharedAccessFindUniqueArgs>(args: SelectSubset<T, SystemSharedAccessFindUniqueArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SystemSharedAccess that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SystemSharedAccessFindUniqueOrThrowArgs} args - Arguments to find a SystemSharedAccess
+     * @example
+     * // Get one SystemSharedAccess
+     * const systemSharedAccess = await prisma.systemSharedAccess.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SystemSharedAccessFindUniqueOrThrowArgs>(args: SelectSubset<T, SystemSharedAccessFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemSharedAccess that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessFindFirstArgs} args - Arguments to find a SystemSharedAccess
+     * @example
+     * // Get one SystemSharedAccess
+     * const systemSharedAccess = await prisma.systemSharedAccess.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SystemSharedAccessFindFirstArgs>(args?: SelectSubset<T, SystemSharedAccessFindFirstArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemSharedAccess that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessFindFirstOrThrowArgs} args - Arguments to find a SystemSharedAccess
+     * @example
+     * // Get one SystemSharedAccess
+     * const systemSharedAccess = await prisma.systemSharedAccess.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SystemSharedAccessFindFirstOrThrowArgs>(args?: SelectSubset<T, SystemSharedAccessFindFirstOrThrowArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SystemSharedAccesses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SystemSharedAccesses
+     * const systemSharedAccesses = await prisma.systemSharedAccess.findMany()
+     * 
+     * // Get first 10 SystemSharedAccesses
+     * const systemSharedAccesses = await prisma.systemSharedAccess.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const systemSharedAccessWithIdOnly = await prisma.systemSharedAccess.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SystemSharedAccessFindManyArgs>(args?: SelectSubset<T, SystemSharedAccessFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SystemSharedAccess.
+     * @param {SystemSharedAccessCreateArgs} args - Arguments to create a SystemSharedAccess.
+     * @example
+     * // Create one SystemSharedAccess
+     * const SystemSharedAccess = await prisma.systemSharedAccess.create({
+     *   data: {
+     *     // ... data to create a SystemSharedAccess
+     *   }
+     * })
+     * 
+     */
+    create<T extends SystemSharedAccessCreateArgs>(args: SelectSubset<T, SystemSharedAccessCreateArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SystemSharedAccesses.
+     * @param {SystemSharedAccessCreateManyArgs} args - Arguments to create many SystemSharedAccesses.
+     * @example
+     * // Create many SystemSharedAccesses
+     * const systemSharedAccess = await prisma.systemSharedAccess.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SystemSharedAccessCreateManyArgs>(args?: SelectSubset<T, SystemSharedAccessCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SystemSharedAccesses and returns the data saved in the database.
+     * @param {SystemSharedAccessCreateManyAndReturnArgs} args - Arguments to create many SystemSharedAccesses.
+     * @example
+     * // Create many SystemSharedAccesses
+     * const systemSharedAccess = await prisma.systemSharedAccess.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SystemSharedAccesses and only return the `id`
+     * const systemSharedAccessWithIdOnly = await prisma.systemSharedAccess.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SystemSharedAccessCreateManyAndReturnArgs>(args?: SelectSubset<T, SystemSharedAccessCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SystemSharedAccess.
+     * @param {SystemSharedAccessDeleteArgs} args - Arguments to delete one SystemSharedAccess.
+     * @example
+     * // Delete one SystemSharedAccess
+     * const SystemSharedAccess = await prisma.systemSharedAccess.delete({
+     *   where: {
+     *     // ... filter to delete one SystemSharedAccess
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SystemSharedAccessDeleteArgs>(args: SelectSubset<T, SystemSharedAccessDeleteArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SystemSharedAccess.
+     * @param {SystemSharedAccessUpdateArgs} args - Arguments to update one SystemSharedAccess.
+     * @example
+     * // Update one SystemSharedAccess
+     * const systemSharedAccess = await prisma.systemSharedAccess.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SystemSharedAccessUpdateArgs>(args: SelectSubset<T, SystemSharedAccessUpdateArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SystemSharedAccesses.
+     * @param {SystemSharedAccessDeleteManyArgs} args - Arguments to filter SystemSharedAccesses to delete.
+     * @example
+     * // Delete a few SystemSharedAccesses
+     * const { count } = await prisma.systemSharedAccess.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SystemSharedAccessDeleteManyArgs>(args?: SelectSubset<T, SystemSharedAccessDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemSharedAccesses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SystemSharedAccesses
+     * const systemSharedAccess = await prisma.systemSharedAccess.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SystemSharedAccessUpdateManyArgs>(args: SelectSubset<T, SystemSharedAccessUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemSharedAccesses and returns the data updated in the database.
+     * @param {SystemSharedAccessUpdateManyAndReturnArgs} args - Arguments to update many SystemSharedAccesses.
+     * @example
+     * // Update many SystemSharedAccesses
+     * const systemSharedAccess = await prisma.systemSharedAccess.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SystemSharedAccesses and only return the `id`
+     * const systemSharedAccessWithIdOnly = await prisma.systemSharedAccess.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SystemSharedAccessUpdateManyAndReturnArgs>(args: SelectSubset<T, SystemSharedAccessUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SystemSharedAccess.
+     * @param {SystemSharedAccessUpsertArgs} args - Arguments to update or create a SystemSharedAccess.
+     * @example
+     * // Update or create a SystemSharedAccess
+     * const systemSharedAccess = await prisma.systemSharedAccess.upsert({
+     *   create: {
+     *     // ... data to create a SystemSharedAccess
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SystemSharedAccess we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SystemSharedAccessUpsertArgs>(args: SelectSubset<T, SystemSharedAccessUpsertArgs<ExtArgs>>): Prisma__SystemSharedAccessClient<$Result.GetResult<Prisma.$SystemSharedAccessPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SystemSharedAccesses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessCountArgs} args - Arguments to filter SystemSharedAccesses to count.
+     * @example
+     * // Count the number of SystemSharedAccesses
+     * const count = await prisma.systemSharedAccess.count({
+     *   where: {
+     *     // ... the filter for the SystemSharedAccesses we want to count
+     *   }
+     * })
+    **/
+    count<T extends SystemSharedAccessCountArgs>(
+      args?: Subset<T, SystemSharedAccessCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SystemSharedAccessCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SystemSharedAccess.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SystemSharedAccessAggregateArgs>(args: Subset<T, SystemSharedAccessAggregateArgs>): Prisma.PrismaPromise<GetSystemSharedAccessAggregateType<T>>
+
+    /**
+     * Group by SystemSharedAccess.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSharedAccessGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SystemSharedAccessGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SystemSharedAccessGroupByArgs['orderBy'] }
+        : { orderBy?: SystemSharedAccessGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SystemSharedAccessGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSystemSharedAccessGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SystemSharedAccess model
+   */
+  readonly fields: SystemSharedAccessFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SystemSharedAccess.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SystemSharedAccessClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    system<T extends SystemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SystemDefaultArgs<ExtArgs>>): Prisma__SystemClient<$Result.GetResult<Prisma.$SystemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SystemSharedAccess model
+   */
+  interface SystemSharedAccessFieldRefs {
+    readonly id: FieldRef<"SystemSharedAccess", 'Int'>
+    readonly email: FieldRef<"SystemSharedAccess", 'String'>
+    readonly createdAt: FieldRef<"SystemSharedAccess", 'DateTime'>
+    readonly updatedAt: FieldRef<"SystemSharedAccess", 'DateTime'>
+    readonly systemId: FieldRef<"SystemSharedAccess", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SystemSharedAccess findUnique
+   */
+  export type SystemSharedAccessFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSharedAccess to fetch.
+     */
+    where: SystemSharedAccessWhereUniqueInput
+  }
+
+  /**
+   * SystemSharedAccess findUniqueOrThrow
+   */
+  export type SystemSharedAccessFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSharedAccess to fetch.
+     */
+    where: SystemSharedAccessWhereUniqueInput
+  }
+
+  /**
+   * SystemSharedAccess findFirst
+   */
+  export type SystemSharedAccessFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSharedAccess to fetch.
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSharedAccesses to fetch.
+     */
+    orderBy?: SystemSharedAccessOrderByWithRelationInput | SystemSharedAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemSharedAccesses.
+     */
+    cursor?: SystemSharedAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSharedAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSharedAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSharedAccesses.
+     */
+    distinct?: SystemSharedAccessScalarFieldEnum | SystemSharedAccessScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSharedAccess findFirstOrThrow
+   */
+  export type SystemSharedAccessFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSharedAccess to fetch.
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSharedAccesses to fetch.
+     */
+    orderBy?: SystemSharedAccessOrderByWithRelationInput | SystemSharedAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemSharedAccesses.
+     */
+    cursor?: SystemSharedAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSharedAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSharedAccesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSharedAccesses.
+     */
+    distinct?: SystemSharedAccessScalarFieldEnum | SystemSharedAccessScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSharedAccess findMany
+   */
+  export type SystemSharedAccessFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSharedAccesses to fetch.
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSharedAccesses to fetch.
+     */
+    orderBy?: SystemSharedAccessOrderByWithRelationInput | SystemSharedAccessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SystemSharedAccesses.
+     */
+    cursor?: SystemSharedAccessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSharedAccesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSharedAccesses.
+     */
+    skip?: number
+    distinct?: SystemSharedAccessScalarFieldEnum | SystemSharedAccessScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSharedAccess create
+   */
+  export type SystemSharedAccessCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SystemSharedAccess.
+     */
+    data: XOR<SystemSharedAccessCreateInput, SystemSharedAccessUncheckedCreateInput>
+  }
+
+  /**
+   * SystemSharedAccess createMany
+   */
+  export type SystemSharedAccessCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SystemSharedAccesses.
+     */
+    data: SystemSharedAccessCreateManyInput | SystemSharedAccessCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemSharedAccess createManyAndReturn
+   */
+  export type SystemSharedAccessCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * The data used to create many SystemSharedAccesses.
+     */
+    data: SystemSharedAccessCreateManyInput | SystemSharedAccessCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemSharedAccess update
+   */
+  export type SystemSharedAccessUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SystemSharedAccess.
+     */
+    data: XOR<SystemSharedAccessUpdateInput, SystemSharedAccessUncheckedUpdateInput>
+    /**
+     * Choose, which SystemSharedAccess to update.
+     */
+    where: SystemSharedAccessWhereUniqueInput
+  }
+
+  /**
+   * SystemSharedAccess updateMany
+   */
+  export type SystemSharedAccessUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SystemSharedAccesses.
+     */
+    data: XOR<SystemSharedAccessUpdateManyMutationInput, SystemSharedAccessUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemSharedAccesses to update
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * Limit how many SystemSharedAccesses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemSharedAccess updateManyAndReturn
+   */
+  export type SystemSharedAccessUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * The data used to update SystemSharedAccesses.
+     */
+    data: XOR<SystemSharedAccessUpdateManyMutationInput, SystemSharedAccessUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemSharedAccesses to update
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * Limit how many SystemSharedAccesses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemSharedAccess upsert
+   */
+  export type SystemSharedAccessUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SystemSharedAccess to update in case it exists.
+     */
+    where: SystemSharedAccessWhereUniqueInput
+    /**
+     * In case the SystemSharedAccess found by the `where` argument doesn't exist, create a new SystemSharedAccess with this data.
+     */
+    create: XOR<SystemSharedAccessCreateInput, SystemSharedAccessUncheckedCreateInput>
+    /**
+     * In case the SystemSharedAccess was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SystemSharedAccessUpdateInput, SystemSharedAccessUncheckedUpdateInput>
+  }
+
+  /**
+   * SystemSharedAccess delete
+   */
+  export type SystemSharedAccessDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
+    /**
+     * Filter which SystemSharedAccess to delete.
+     */
+    where: SystemSharedAccessWhereUniqueInput
+  }
+
+  /**
+   * SystemSharedAccess deleteMany
+   */
+  export type SystemSharedAccessDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemSharedAccesses to delete
+     */
+    where?: SystemSharedAccessWhereInput
+    /**
+     * Limit how many SystemSharedAccesses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemSharedAccess without action
+   */
+  export type SystemSharedAccessDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSharedAccess
+     */
+    select?: SystemSharedAccessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSharedAccess
+     */
+    omit?: SystemSharedAccessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSharedAccessInclude<ExtArgs> | null
   }
 
 
@@ -11986,6 +13206,17 @@ export namespace Prisma {
   export type SystemScalarFieldEnum = (typeof SystemScalarFieldEnum)[keyof typeof SystemScalarFieldEnum]
 
 
+  export const SystemSharedAccessScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    systemId: 'systemId'
+  };
+
+  export type SystemSharedAccessScalarFieldEnum = (typeof SystemSharedAccessScalarFieldEnum)[keyof typeof SystemSharedAccessScalarFieldEnum]
+
+
   export const FilterMediaScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -12217,6 +13448,7 @@ export namespace Prisma {
     parameters?: SystemParameterListRelationFilter
     activities?: SystemActivityListRelationFilter
     filterMedia?: FilterMediaListRelationFilter
+    sharedAccesses?: SystemSharedAccessListRelationFilter
   }
 
   export type SystemOrderByWithRelationInput = {
@@ -12230,6 +13462,7 @@ export namespace Prisma {
     parameters?: SystemParameterOrderByRelationAggregateInput
     activities?: SystemActivityOrderByRelationAggregateInput
     filterMedia?: FilterMediaOrderByRelationAggregateInput
+    sharedAccesses?: SystemSharedAccessOrderByRelationAggregateInput
   }
 
   export type SystemWhereUniqueInput = Prisma.AtLeast<{
@@ -12246,6 +13479,7 @@ export namespace Prisma {
     parameters?: SystemParameterListRelationFilter
     activities?: SystemActivityListRelationFilter
     filterMedia?: FilterMediaListRelationFilter
+    sharedAccesses?: SystemSharedAccessListRelationFilter
   }, "id">
 
   export type SystemOrderByWithAggregationInput = {
@@ -12272,6 +13506,64 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"System"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"System"> | Date | string
     createdById?: StringWithAggregatesFilter<"System"> | string
+  }
+
+  export type SystemSharedAccessWhereInput = {
+    AND?: SystemSharedAccessWhereInput | SystemSharedAccessWhereInput[]
+    OR?: SystemSharedAccessWhereInput[]
+    NOT?: SystemSharedAccessWhereInput | SystemSharedAccessWhereInput[]
+    id?: IntFilter<"SystemSharedAccess"> | number
+    email?: StringFilter<"SystemSharedAccess"> | string
+    createdAt?: DateTimeFilter<"SystemSharedAccess"> | Date | string
+    updatedAt?: DateTimeFilter<"SystemSharedAccess"> | Date | string
+    systemId?: StringFilter<"SystemSharedAccess"> | string
+    system?: XOR<SystemScalarRelationFilter, SystemWhereInput>
+  }
+
+  export type SystemSharedAccessOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    systemId?: SortOrder
+    system?: SystemOrderByWithRelationInput
+  }
+
+  export type SystemSharedAccessWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    systemId_email?: SystemSharedAccessSystemIdEmailCompoundUniqueInput
+    AND?: SystemSharedAccessWhereInput | SystemSharedAccessWhereInput[]
+    OR?: SystemSharedAccessWhereInput[]
+    NOT?: SystemSharedAccessWhereInput | SystemSharedAccessWhereInput[]
+    email?: StringFilter<"SystemSharedAccess"> | string
+    createdAt?: DateTimeFilter<"SystemSharedAccess"> | Date | string
+    updatedAt?: DateTimeFilter<"SystemSharedAccess"> | Date | string
+    systemId?: StringFilter<"SystemSharedAccess"> | string
+    system?: XOR<SystemScalarRelationFilter, SystemWhereInput>
+  }, "id" | "systemId_email">
+
+  export type SystemSharedAccessOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    systemId?: SortOrder
+    _count?: SystemSharedAccessCountOrderByAggregateInput
+    _avg?: SystemSharedAccessAvgOrderByAggregateInput
+    _max?: SystemSharedAccessMaxOrderByAggregateInput
+    _min?: SystemSharedAccessMinOrderByAggregateInput
+    _sum?: SystemSharedAccessSumOrderByAggregateInput
+  }
+
+  export type SystemSharedAccessScalarWhereWithAggregatesInput = {
+    AND?: SystemSharedAccessScalarWhereWithAggregatesInput | SystemSharedAccessScalarWhereWithAggregatesInput[]
+    OR?: SystemSharedAccessScalarWhereWithAggregatesInput[]
+    NOT?: SystemSharedAccessScalarWhereWithAggregatesInput | SystemSharedAccessScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SystemSharedAccess"> | number
+    email?: StringWithAggregatesFilter<"SystemSharedAccess"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"SystemSharedAccess"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SystemSharedAccess"> | Date | string
+    systemId?: StringWithAggregatesFilter<"SystemSharedAccess"> | string
   }
 
   export type FilterMediaWhereInput = {
@@ -12849,6 +14141,7 @@ export namespace Prisma {
     parameters?: SystemParameterCreateNestedManyWithoutSystemInput
     activities?: SystemActivityCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessCreateNestedManyWithoutSystemInput
   }
 
   export type SystemUncheckedCreateInput = {
@@ -12861,6 +14154,7 @@ export namespace Prisma {
     parameters?: SystemParameterUncheckedCreateNestedManyWithoutSystemInput
     activities?: SystemActivityUncheckedCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaUncheckedCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessUncheckedCreateNestedManyWithoutSystemInput
   }
 
   export type SystemUpdateInput = {
@@ -12873,6 +14167,7 @@ export namespace Prisma {
     parameters?: SystemParameterUpdateManyWithoutSystemNestedInput
     activities?: SystemActivityUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemUncheckedUpdateInput = {
@@ -12885,6 +14180,7 @@ export namespace Prisma {
     parameters?: SystemParameterUncheckedUpdateManyWithoutSystemNestedInput
     activities?: SystemActivityUncheckedUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUncheckedUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUncheckedUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemCreateManyInput = {
@@ -12911,6 +14207,58 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SystemSharedAccessCreateInput = {
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    system: SystemCreateNestedOneWithoutSharedAccessesInput
+  }
+
+  export type SystemSharedAccessUncheckedCreateInput = {
+    id?: number
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemId: string
+  }
+
+  export type SystemSharedAccessUpdateInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    system?: SystemUpdateOneRequiredWithoutSharedAccessesNestedInput
+  }
+
+  export type SystemSharedAccessUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SystemSharedAccessCreateManyInput = {
+    id?: number
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    systemId: string
+  }
+
+  export type SystemSharedAccessUpdateManyMutationInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSharedAccessUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    systemId?: StringFieldUpdateOperationsInput | string
   }
 
   export type FilterMediaCreateInput = {
@@ -13562,6 +14910,12 @@ export namespace Prisma {
     none?: FilterMediaWhereInput
   }
 
+  export type SystemSharedAccessListRelationFilter = {
+    every?: SystemSharedAccessWhereInput
+    some?: SystemSharedAccessWhereInput
+    none?: SystemSharedAccessWhereInput
+  }
+
   export type SystemParameterOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -13571,6 +14925,10 @@ export namespace Prisma {
   }
 
   export type FilterMediaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SystemSharedAccessOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13657,6 +15015,48 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type SystemScalarRelationFilter = {
+    is?: SystemWhereInput
+    isNot?: SystemWhereInput
+  }
+
+  export type SystemSharedAccessSystemIdEmailCompoundUniqueInput = {
+    systemId: string
+    email: string
+  }
+
+  export type SystemSharedAccessCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    systemId?: SortOrder
+  }
+
+  export type SystemSharedAccessAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SystemSharedAccessMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    systemId?: SortOrder
+  }
+
+  export type SystemSharedAccessMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    systemId?: SortOrder
+  }
+
+  export type SystemSharedAccessSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -13666,11 +15066,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type SystemScalarRelationFilter = {
-    is?: SystemWhereInput
-    isNot?: SystemWhereInput
   }
 
   export type SortOrderInput = {
@@ -14238,6 +15633,13 @@ export namespace Prisma {
     connect?: FilterMediaWhereUniqueInput | FilterMediaWhereUniqueInput[]
   }
 
+  export type SystemSharedAccessCreateNestedManyWithoutSystemInput = {
+    create?: XOR<SystemSharedAccessCreateWithoutSystemInput, SystemSharedAccessUncheckedCreateWithoutSystemInput> | SystemSharedAccessCreateWithoutSystemInput[] | SystemSharedAccessUncheckedCreateWithoutSystemInput[]
+    connectOrCreate?: SystemSharedAccessCreateOrConnectWithoutSystemInput | SystemSharedAccessCreateOrConnectWithoutSystemInput[]
+    createMany?: SystemSharedAccessCreateManySystemInputEnvelope
+    connect?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+  }
+
   export type SystemParameterUncheckedCreateNestedManyWithoutSystemInput = {
     create?: XOR<SystemParameterCreateWithoutSystemInput, SystemParameterUncheckedCreateWithoutSystemInput> | SystemParameterCreateWithoutSystemInput[] | SystemParameterUncheckedCreateWithoutSystemInput[]
     connectOrCreate?: SystemParameterCreateOrConnectWithoutSystemInput | SystemParameterCreateOrConnectWithoutSystemInput[]
@@ -14257,6 +15659,13 @@ export namespace Prisma {
     connectOrCreate?: FilterMediaCreateOrConnectWithoutSystemInput | FilterMediaCreateOrConnectWithoutSystemInput[]
     createMany?: FilterMediaCreateManySystemInputEnvelope
     connect?: FilterMediaWhereUniqueInput | FilterMediaWhereUniqueInput[]
+  }
+
+  export type SystemSharedAccessUncheckedCreateNestedManyWithoutSystemInput = {
+    create?: XOR<SystemSharedAccessCreateWithoutSystemInput, SystemSharedAccessUncheckedCreateWithoutSystemInput> | SystemSharedAccessCreateWithoutSystemInput[] | SystemSharedAccessUncheckedCreateWithoutSystemInput[]
+    connectOrCreate?: SystemSharedAccessCreateOrConnectWithoutSystemInput | SystemSharedAccessCreateOrConnectWithoutSystemInput[]
+    createMany?: SystemSharedAccessCreateManySystemInputEnvelope
+    connect?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -14325,6 +15734,20 @@ export namespace Prisma {
     deleteMany?: FilterMediaScalarWhereInput | FilterMediaScalarWhereInput[]
   }
 
+  export type SystemSharedAccessUpdateManyWithoutSystemNestedInput = {
+    create?: XOR<SystemSharedAccessCreateWithoutSystemInput, SystemSharedAccessUncheckedCreateWithoutSystemInput> | SystemSharedAccessCreateWithoutSystemInput[] | SystemSharedAccessUncheckedCreateWithoutSystemInput[]
+    connectOrCreate?: SystemSharedAccessCreateOrConnectWithoutSystemInput | SystemSharedAccessCreateOrConnectWithoutSystemInput[]
+    upsert?: SystemSharedAccessUpsertWithWhereUniqueWithoutSystemInput | SystemSharedAccessUpsertWithWhereUniqueWithoutSystemInput[]
+    createMany?: SystemSharedAccessCreateManySystemInputEnvelope
+    set?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    disconnect?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    delete?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    connect?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    update?: SystemSharedAccessUpdateWithWhereUniqueWithoutSystemInput | SystemSharedAccessUpdateWithWhereUniqueWithoutSystemInput[]
+    updateMany?: SystemSharedAccessUpdateManyWithWhereWithoutSystemInput | SystemSharedAccessUpdateManyWithWhereWithoutSystemInput[]
+    deleteMany?: SystemSharedAccessScalarWhereInput | SystemSharedAccessScalarWhereInput[]
+  }
+
   export type SystemParameterUncheckedUpdateManyWithoutSystemNestedInput = {
     create?: XOR<SystemParameterCreateWithoutSystemInput, SystemParameterUncheckedCreateWithoutSystemInput> | SystemParameterCreateWithoutSystemInput[] | SystemParameterUncheckedCreateWithoutSystemInput[]
     connectOrCreate?: SystemParameterCreateOrConnectWithoutSystemInput | SystemParameterCreateOrConnectWithoutSystemInput[]
@@ -14365,6 +15788,34 @@ export namespace Prisma {
     update?: FilterMediaUpdateWithWhereUniqueWithoutSystemInput | FilterMediaUpdateWithWhereUniqueWithoutSystemInput[]
     updateMany?: FilterMediaUpdateManyWithWhereWithoutSystemInput | FilterMediaUpdateManyWithWhereWithoutSystemInput[]
     deleteMany?: FilterMediaScalarWhereInput | FilterMediaScalarWhereInput[]
+  }
+
+  export type SystemSharedAccessUncheckedUpdateManyWithoutSystemNestedInput = {
+    create?: XOR<SystemSharedAccessCreateWithoutSystemInput, SystemSharedAccessUncheckedCreateWithoutSystemInput> | SystemSharedAccessCreateWithoutSystemInput[] | SystemSharedAccessUncheckedCreateWithoutSystemInput[]
+    connectOrCreate?: SystemSharedAccessCreateOrConnectWithoutSystemInput | SystemSharedAccessCreateOrConnectWithoutSystemInput[]
+    upsert?: SystemSharedAccessUpsertWithWhereUniqueWithoutSystemInput | SystemSharedAccessUpsertWithWhereUniqueWithoutSystemInput[]
+    createMany?: SystemSharedAccessCreateManySystemInputEnvelope
+    set?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    disconnect?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    delete?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    connect?: SystemSharedAccessWhereUniqueInput | SystemSharedAccessWhereUniqueInput[]
+    update?: SystemSharedAccessUpdateWithWhereUniqueWithoutSystemInput | SystemSharedAccessUpdateWithWhereUniqueWithoutSystemInput[]
+    updateMany?: SystemSharedAccessUpdateManyWithWhereWithoutSystemInput | SystemSharedAccessUpdateManyWithWhereWithoutSystemInput[]
+    deleteMany?: SystemSharedAccessScalarWhereInput | SystemSharedAccessScalarWhereInput[]
+  }
+
+  export type SystemCreateNestedOneWithoutSharedAccessesInput = {
+    create?: XOR<SystemCreateWithoutSharedAccessesInput, SystemUncheckedCreateWithoutSharedAccessesInput>
+    connectOrCreate?: SystemCreateOrConnectWithoutSharedAccessesInput
+    connect?: SystemWhereUniqueInput
+  }
+
+  export type SystemUpdateOneRequiredWithoutSharedAccessesNestedInput = {
+    create?: XOR<SystemCreateWithoutSharedAccessesInput, SystemUncheckedCreateWithoutSharedAccessesInput>
+    connectOrCreate?: SystemCreateOrConnectWithoutSharedAccessesInput
+    upsert?: SystemUpsertWithoutSharedAccessesInput
+    connect?: SystemWhereUniqueInput
+    update?: XOR<XOR<SystemUpdateToOneWithWhereWithoutSharedAccessesInput, SystemUpdateWithoutSharedAccessesInput>, SystemUncheckedUpdateWithoutSharedAccessesInput>
   }
 
   export type SystemCreateNestedOneWithoutFilterMediaInput = {
@@ -15093,6 +16544,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SystemSharedAccessCreateWithoutSystemInput = {
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SystemSharedAccessUncheckedCreateWithoutSystemInput = {
+    id?: number
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SystemSharedAccessCreateOrConnectWithoutSystemInput = {
+    where: SystemSharedAccessWhereUniqueInput
+    create: XOR<SystemSharedAccessCreateWithoutSystemInput, SystemSharedAccessUncheckedCreateWithoutSystemInput>
+  }
+
+  export type SystemSharedAccessCreateManySystemInputEnvelope = {
+    data: SystemSharedAccessCreateManySystemInput | SystemSharedAccessCreateManySystemInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutSystemsInput = {
     update: XOR<UserUpdateWithoutSystemsInput, UserUncheckedUpdateWithoutSystemsInput>
     create: XOR<UserCreateWithoutSystemsInput, UserUncheckedCreateWithoutSystemsInput>
@@ -15219,6 +16693,97 @@ export namespace Prisma {
     systemId?: StringFilter<"FilterMedia"> | string
   }
 
+  export type SystemSharedAccessUpsertWithWhereUniqueWithoutSystemInput = {
+    where: SystemSharedAccessWhereUniqueInput
+    update: XOR<SystemSharedAccessUpdateWithoutSystemInput, SystemSharedAccessUncheckedUpdateWithoutSystemInput>
+    create: XOR<SystemSharedAccessCreateWithoutSystemInput, SystemSharedAccessUncheckedCreateWithoutSystemInput>
+  }
+
+  export type SystemSharedAccessUpdateWithWhereUniqueWithoutSystemInput = {
+    where: SystemSharedAccessWhereUniqueInput
+    data: XOR<SystemSharedAccessUpdateWithoutSystemInput, SystemSharedAccessUncheckedUpdateWithoutSystemInput>
+  }
+
+  export type SystemSharedAccessUpdateManyWithWhereWithoutSystemInput = {
+    where: SystemSharedAccessScalarWhereInput
+    data: XOR<SystemSharedAccessUpdateManyMutationInput, SystemSharedAccessUncheckedUpdateManyWithoutSystemInput>
+  }
+
+  export type SystemSharedAccessScalarWhereInput = {
+    AND?: SystemSharedAccessScalarWhereInput | SystemSharedAccessScalarWhereInput[]
+    OR?: SystemSharedAccessScalarWhereInput[]
+    NOT?: SystemSharedAccessScalarWhereInput | SystemSharedAccessScalarWhereInput[]
+    id?: IntFilter<"SystemSharedAccess"> | number
+    email?: StringFilter<"SystemSharedAccess"> | string
+    createdAt?: DateTimeFilter<"SystemSharedAccess"> | Date | string
+    updatedAt?: DateTimeFilter<"SystemSharedAccess"> | Date | string
+    systemId?: StringFilter<"SystemSharedAccess"> | string
+  }
+
+  export type SystemCreateWithoutSharedAccessesInput = {
+    id?: string
+    name: string
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutSystemsInput
+    parameters?: SystemParameterCreateNestedManyWithoutSystemInput
+    activities?: SystemActivityCreateNestedManyWithoutSystemInput
+    filterMedia?: FilterMediaCreateNestedManyWithoutSystemInput
+  }
+
+  export type SystemUncheckedCreateWithoutSharedAccessesInput = {
+    id?: string
+    name: string
+    displayOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById: string
+    parameters?: SystemParameterUncheckedCreateNestedManyWithoutSystemInput
+    activities?: SystemActivityUncheckedCreateNestedManyWithoutSystemInput
+    filterMedia?: FilterMediaUncheckedCreateNestedManyWithoutSystemInput
+  }
+
+  export type SystemCreateOrConnectWithoutSharedAccessesInput = {
+    where: SystemWhereUniqueInput
+    create: XOR<SystemCreateWithoutSharedAccessesInput, SystemUncheckedCreateWithoutSharedAccessesInput>
+  }
+
+  export type SystemUpsertWithoutSharedAccessesInput = {
+    update: XOR<SystemUpdateWithoutSharedAccessesInput, SystemUncheckedUpdateWithoutSharedAccessesInput>
+    create: XOR<SystemCreateWithoutSharedAccessesInput, SystemUncheckedCreateWithoutSharedAccessesInput>
+    where?: SystemWhereInput
+  }
+
+  export type SystemUpdateToOneWithWhereWithoutSharedAccessesInput = {
+    where?: SystemWhereInput
+    data: XOR<SystemUpdateWithoutSharedAccessesInput, SystemUncheckedUpdateWithoutSharedAccessesInput>
+  }
+
+  export type SystemUpdateWithoutSharedAccessesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
+    parameters?: SystemParameterUpdateManyWithoutSystemNestedInput
+    activities?: SystemActivityUpdateManyWithoutSystemNestedInput
+    filterMedia?: FilterMediaUpdateManyWithoutSystemNestedInput
+  }
+
+  export type SystemUncheckedUpdateWithoutSharedAccessesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    displayOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    parameters?: SystemParameterUncheckedUpdateManyWithoutSystemNestedInput
+    activities?: SystemActivityUncheckedUpdateManyWithoutSystemNestedInput
+    filterMedia?: FilterMediaUncheckedUpdateManyWithoutSystemNestedInput
+  }
+
   export type SystemCreateWithoutFilterMediaInput = {
     id?: string
     name: string
@@ -15228,6 +16793,7 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutSystemsInput
     parameters?: SystemParameterCreateNestedManyWithoutSystemInput
     activities?: SystemActivityCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessCreateNestedManyWithoutSystemInput
   }
 
   export type SystemUncheckedCreateWithoutFilterMediaInput = {
@@ -15239,6 +16805,7 @@ export namespace Prisma {
     createdById: string
     parameters?: SystemParameterUncheckedCreateNestedManyWithoutSystemInput
     activities?: SystemActivityUncheckedCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessUncheckedCreateNestedManyWithoutSystemInput
   }
 
   export type SystemCreateOrConnectWithoutFilterMediaInput = {
@@ -15266,6 +16833,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
     parameters?: SystemParameterUpdateManyWithoutSystemNestedInput
     activities?: SystemActivityUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemUncheckedUpdateWithoutFilterMediaInput = {
@@ -15277,6 +16845,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     parameters?: SystemParameterUncheckedUpdateManyWithoutSystemNestedInput
     activities?: SystemActivityUncheckedUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUncheckedUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemCreateWithoutActivitiesInput = {
@@ -15288,6 +16857,7 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutSystemsInput
     parameters?: SystemParameterCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessCreateNestedManyWithoutSystemInput
   }
 
   export type SystemUncheckedCreateWithoutActivitiesInput = {
@@ -15299,6 +16869,7 @@ export namespace Prisma {
     createdById: string
     parameters?: SystemParameterUncheckedCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaUncheckedCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessUncheckedCreateNestedManyWithoutSystemInput
   }
 
   export type SystemCreateOrConnectWithoutActivitiesInput = {
@@ -15362,6 +16933,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
     parameters?: SystemParameterUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemUncheckedUpdateWithoutActivitiesInput = {
@@ -15373,6 +16945,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     parameters?: SystemParameterUncheckedUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUncheckedUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUncheckedUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemParameterUpsertWithoutSystemActivitiesInput = {
@@ -15426,6 +16999,7 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutSystemsInput
     activities?: SystemActivityCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessCreateNestedManyWithoutSystemInput
   }
 
   export type SystemUncheckedCreateWithoutParametersInput = {
@@ -15437,6 +17011,7 @@ export namespace Prisma {
     createdById: string
     activities?: SystemActivityUncheckedCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaUncheckedCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessUncheckedCreateNestedManyWithoutSystemInput
   }
 
   export type SystemCreateOrConnectWithoutParametersInput = {
@@ -15522,6 +17097,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutSystemsNestedInput
     activities?: SystemActivityUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemUncheckedUpdateWithoutParametersInput = {
@@ -15533,6 +17109,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     activities?: SystemActivityUncheckedUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUncheckedUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUncheckedUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemParameterLogUpsertWithWhereUniqueWithoutParameterInput = {
@@ -15840,6 +17417,7 @@ export namespace Prisma {
     parameters?: SystemParameterCreateNestedManyWithoutSystemInput
     activities?: SystemActivityCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessCreateNestedManyWithoutSystemInput
   }
 
   export type SystemUncheckedCreateWithoutCreatedByInput = {
@@ -15851,6 +17429,7 @@ export namespace Prisma {
     parameters?: SystemParameterUncheckedCreateNestedManyWithoutSystemInput
     activities?: SystemActivityUncheckedCreateNestedManyWithoutSystemInput
     filterMedia?: FilterMediaUncheckedCreateNestedManyWithoutSystemInput
+    sharedAccesses?: SystemSharedAccessUncheckedCreateNestedManyWithoutSystemInput
   }
 
   export type SystemCreateOrConnectWithoutCreatedByInput = {
@@ -15987,6 +17566,13 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SystemSharedAccessCreateManySystemInput = {
+    id?: number
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type SystemParameterUpdateWithoutSystemInput = {
     fullName?: StringFieldUpdateOperationsInput | string
     abbreviatedName?: StringFieldUpdateOperationsInput | string
@@ -16089,6 +17675,26 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSharedAccessUpdateWithoutSystemInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSharedAccessUncheckedUpdateWithoutSystemInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSharedAccessUncheckedUpdateManyWithoutSystemInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16272,6 +17878,7 @@ export namespace Prisma {
     parameters?: SystemParameterUpdateManyWithoutSystemNestedInput
     activities?: SystemActivityUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemUncheckedUpdateWithoutCreatedByInput = {
@@ -16283,6 +17890,7 @@ export namespace Prisma {
     parameters?: SystemParameterUncheckedUpdateManyWithoutSystemNestedInput
     activities?: SystemActivityUncheckedUpdateManyWithoutSystemNestedInput
     filterMedia?: FilterMediaUncheckedUpdateManyWithoutSystemNestedInput
+    sharedAccesses?: SystemSharedAccessUncheckedUpdateManyWithoutSystemNestedInput
   }
 
   export type SystemUncheckedUpdateManyWithoutCreatedByInput = {

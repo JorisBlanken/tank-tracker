@@ -9,6 +9,7 @@ import { LogParameterButton } from "~/app/systems/[id]/_components/log-parameter
 import { LogWaterChangeButton } from "~/app/systems/[id]/_components/log-water-change-button";
 import { NotesCarousel } from "~/app/systems/[id]/_components/notes-carousel";
 import { SystemSettingsSheet } from "~/app/systems/[id]/_components/system-settings-sheet";
+import { auth } from "~/server/auth";
 import { api } from "~/trpc/server";
 
 type SystemPageProps = {
@@ -23,6 +24,7 @@ function formatNumber(value: number, decimals: number) {
 
 export default async function SystemPage({ params }: SystemPageProps) {
   const { id } = await params;
+  const session = await auth();
 
   let system: Awaited<ReturnType<typeof api.system.getById>>;
   let initialActivityPage: Awaited<ReturnType<typeof api.system.getActivity>>;
@@ -39,6 +41,7 @@ export default async function SystemPage({ params }: SystemPageProps) {
   const overviewParameters = system.parameters.filter(
     (parameter) => parameter.showOnOverview
   );
+  const canManageSettings = session?.user?.id === system.createdById;
 
   return (
     <main className="min-h-screen bg-slate-50 py-6 text-slate-900">
@@ -59,21 +62,24 @@ export default async function SystemPage({ params }: SystemPageProps) {
               <p className="text-sm text-slate-600">System Overview</p>
             </div>
           </div>
-          <SystemSettingsSheet
-            systemId={system.id}
-            systemName={system.name}
-            parameters={system.parameters.map((parameter) => ({
-              id: parameter.id,
-              fullName: parameter.fullName,
-              abbreviatedName: parameter.abbreviatedName,
-              unit: parameter.unit,
-              showOnOverview: parameter.showOnOverview,
-              displayDecimals: parameter.displayDecimals,
-              lowerBound: parameter.lowerBound,
-              upperBound: parameter.upperBound,
-              displayOrder: parameter.displayOrder,
-            }))}
-          />
+          {canManageSettings && (
+            <SystemSettingsSheet
+              systemId={system.id}
+              systemName={system.name}
+              parameters={system.parameters.map((parameter) => ({
+                id: parameter.id,
+                fullName: parameter.fullName,
+                abbreviatedName: parameter.abbreviatedName,
+                unit: parameter.unit,
+                showOnOverview: parameter.showOnOverview,
+                displayDecimals: parameter.displayDecimals,
+                lowerBound: parameter.lowerBound,
+                upperBound: parameter.upperBound,
+                displayOrder: parameter.displayOrder,
+              }))}
+              sharedAccess={system.sharedAccesses}
+            />
+          )}
         </header>
 
         <section className="px-5">

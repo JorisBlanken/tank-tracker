@@ -55,8 +55,17 @@ const DEFAULT_PARAMETERS = [
 
 export const systemRouter = createTRPCRouter({
   listMine: protectedProcedure.query(async ({ ctx }) => {
+    const sessionEmail = ctx.session.user.email?.toLowerCase();
+
     return ctx.db.system.findMany({
-      where: { createdById: ctx.session.user.id },
+      where: sessionEmail
+        ? {
+            OR: [
+              { createdById: ctx.session.user.id },
+              { sharedAccesses: { some: { email: sessionEmail } } },
+            ],
+          }
+        : { createdById: ctx.session.user.id },
       orderBy: [{ displayOrder: "asc" }, { createdAt: "desc" }],
       select: {
         id: true,
@@ -154,6 +163,102 @@ export const systemRouter = createTRPCRouter({
         where: { id: input.id },
         data: { name: input.name },
       });
+    }),
+
+  listSharedAccess: protectedProcedure
+    .input(
+      z.object({
+        systemId: z.string().cuid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const system = await ctx.db.system.findFirst({
+        where: {
+          id: input.systemId,
+          createdById: ctx.session.user.id,
+        },
+        select: { id: true },
+      });
+
+      if (!system) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return ctx.db.systemSharedAccess.findMany({
+        where: { systemId: input.systemId },
+        orderBy: { email: "asc" },
+        select: {
+          id: true,
+          email: true,
+        },
+      });
+    }),
+
+  addSharedAccess: protectedProcedure
+    .input(
+      z.object({
+        systemId: z.string().cuid(),
+        email: z.string().trim().email().max(320),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const system = await ctx.db.system.findFirst({
+        where: {
+          id: input.systemId,
+          createdById: ctx.session.user.id,
+        },
+        select: { id: true },
+      });
+
+      if (!system) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const email = input.email.toLowerCase();
+
+      return ctx.db.systemSharedAccess.upsert({
+        where: {
+          systemId_email: {
+            systemId: input.systemId,
+            email,
+          },
+        },
+        update: {},
+        create: {
+          systemId: input.systemId,
+          email,
+        },
+        select: {
+          id: true,
+          email: true,
+        },
+      });
+    }),
+
+  removeSharedAccess: protectedProcedure
+    .input(
+      z.object({
+        accessId: z.number().int().positive(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.db.systemSharedAccess.findFirst({
+        where: {
+          id: input.accessId,
+          system: { createdById: ctx.session.user.id },
+        },
+        select: { id: true },
+      });
+
+      if (!existing) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      await ctx.db.systemSharedAccess.delete({
+        where: { id: input.accessId },
+      });
+
+      return { id: input.accessId };
     }),
 
   delete: protectedProcedure
@@ -449,10 +554,18 @@ export const systemRouter = createTRPCRouter({
   getFilterMedia: protectedProcedure
     .input(z.object({ systemId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -758,10 +871,18 @@ export const systemRouter = createTRPCRouter({
   listSupplementProducts: protectedProcedure
     .input(z.object({ systemId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -803,10 +924,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -843,10 +972,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -890,10 +1027,18 @@ export const systemRouter = createTRPCRouter({
   getAllNotes: protectedProcedure
     .input(z.object({ systemId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -929,10 +1074,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -996,10 +1149,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const parameter = await ctx.db.systemParameter.findFirst({
         where: {
           id: input.parameterId,
-          system: { createdById: ctx.session.user.id },
+          system: sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id },
         },
         select: { id: true },
       });
@@ -1039,14 +1200,29 @@ export const systemRouter = createTRPCRouter({
   getById: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.id,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         include: {
           filterMedia: {
             orderBy: [{ addedAt: "desc" }, { id: "desc" }],
+          },
+          sharedAccesses: {
+            orderBy: { email: "asc" },
+            select: {
+              id: true,
+              email: true,
+            },
           },
           parameters: {
             orderBy: { displayOrder: "asc" },
