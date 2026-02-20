@@ -5,6 +5,90 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 700px at 10% -10%, #33415540, transparent 60%),
+    radial-gradient(900px 600px at 90% 0%, #0f172a90, transparent 70%),
+    linear-gradient(180deg, #060b14 0%, #02050b 100%);
+  color: #e2e8f0;
+}
+
+/* Global dark glass skin mapped to existing utility classes */
+.bg-slate-50 {
+  background-color: #0b1220cc !important;
+  backdrop-filter: blur(14px);
+}
+
+.bg-slate-100 {
+  background-color: #121a2acc !important;
+  backdrop-filter: blur(14px);
+}
+
+.bg-slate-700 {
+  background: linear-gradient(180deg, #243247 0%, #172135 100%) !important;
+}
+
+.border-slate-200 {
+  border-color: #27344a !important;
+}
+
+.border-slate-300 {
+  border-color: #334155 !important;
+}
+
+.border-slate-700 {
+  border-color: #334155 !important;
+}
+
+.text-slate-900,
+.text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+.text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-500 {
+  color: #7b8ba1 !important;
+}
+
+.text-slate-50 {
+  color: #f8fafc !important;
+}
+
+.shadow-sm,
+.shadow-xl,
+.shadow-lg {
+  box-shadow:
+    0 10px 30px #0000004d,
+    inset 0 1px 0 #ffffff12 !important;
+}
+
+input,
+textarea,
+select {
+  color: #e2e8f0;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #7b8ba1;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
