@@ -50,6 +50,26 @@ function getValueColorClass(value: number | null, lowerBound: number, upperBound
   return "text-green-300";
 }
 
+function getOutOfBoundsDirection(
+  value: number | null,
+  lowerBound: number,
+  upperBound: number
+): "up" | "down" | null {
+  if (value === null) {
+    return null;
+  }
+
+  if (value < lowerBound) {
+    return "down";
+  }
+
+  if (value > upperBound) {
+    return "up";
+  }
+
+  return null;
+}
+
 export function SystemsList({
   initialSystems,
   allowReorder = true,
@@ -182,6 +202,11 @@ export function SystemsList({
                       parameter.lowerBound,
                       parameter.upperBound
                     ),
+                    outOfBoundsDirection: getOutOfBoundsDirection(
+                      parameter.logs[0]?.value ?? null,
+                      parameter.lowerBound,
+                      parameter.upperBound
+                    ),
                   },
                 ])
             );
@@ -214,6 +239,10 @@ export function SystemsList({
                         valuesByAbbreviation.get(column)?.textClass ?? "text-slate-500"
                       }
                     >
+                      {valuesByAbbreviation.get(column)?.outOfBoundsDirection ===
+                        "up" && <span aria-hidden>↑</span>}
+                      {valuesByAbbreviation.get(column)?.outOfBoundsDirection ===
+                        "down" && <span aria-hidden>↓</span>}
                       {valuesByAbbreviation.get(column)?.displayValue ?? "--"}
                     </span>
                   </td>
