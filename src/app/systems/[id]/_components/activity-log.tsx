@@ -116,10 +116,10 @@ export function ActivityLog({ systemId, initialPage }: ActivityLogProps) {
                 {group.items.map((item, index) => (
                   <li key={item.id} className="relative">
                     {index < group.items.length - 1 && (
-                      <span className="absolute bottom-[-34px] left-[-13px] top-[22px] w-px bg-slate-200" />
+                      <span className="absolute bottom-[-34px] left-[-13px] top-[22px] w-px bg-slate-700/80" />
                     )}
-                    <span className="absolute top-4 -left-[18px] h-3 w-3 rounded-full border border-slate-200 bg-slate-50" />
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
+                    <span className="absolute top-4 -left-[18px] h-3 w-3 rounded-full border border-slate-700/80 bg-slate-950" />
+                    <div className="rounded-xl border border-slate-700/80 bg-slate-50 px-4 py-3 shadow-sm">
                     {item.type === "SYSTEM_CREATED" ? (
                       <>
                         <p className="text-base font-semibold text-slate-900">System Created</p>

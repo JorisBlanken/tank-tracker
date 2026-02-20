@@ -53,7 +53,7 @@ export function ParameterTrends({ parameters }: ParameterTrendsProps) {
   }
 
   return (
-    <div className="flex flex-col divide-y divide-slate-200">
+    <div className="flex flex-col divide-y divide-slate-700/80">
       {parameters.map((parameter) => (
         <ParameterTrendRow key={parameter.id} parameter={parameter} />
       ))}

@@ -7,7 +7,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import { formatRelativeDateTime } from "~/lib/date-display";
 import { api } from "~/trpc/react";
@@ -42,32 +42,55 @@ export function LogParameterButton({
 
   const [open, setOpen] = useState(false);
   const [loggedAt, setLoggedAt] = useState(getNowLocalDateTime);
-  const [parameterId, setParameterId] = useState<number | null>(
-    parameters[0]?.id ?? null
+  const [valuesByParameter, setValuesByParameter] = useState<
+    Record<number, string>
+  >({});
+  const [isSaving, setIsSaving] = useState(false);
+
+  const logParameter = api.system.logParameter.useMutation();
+
+  const enteredValues = parameters
+    .map((parameter) => ({
+      parameterId: parameter.id,
+      raw: valuesByParameter[parameter.id]?.trim() ?? "",
+    }))
+    .filter((entry) => entry.raw.length > 0);
+
+  const hasInvalidEnteredValue = enteredValues.some((entry) =>
+    Number.isNaN(Number(entry.raw))
   );
-  const [value, setValue] = useState("");
 
-  useEffect(() => {
-    if (parameterId !== null) return;
-    if (!parameters[0]) return;
-    setParameterId(parameters[0].id);
-  }, [parameterId, parameters]);
+  const canSave =
+    !isSaving &&
+    loggedAt.trim().length > 0 &&
+    enteredValues.length > 0 &&
+    !hasInvalidEnteredValue;
 
-  const selectedParameter = useMemo(
-    () => parameters.find((parameter) => parameter.id === parameterId) ?? null,
-    [parameterId, parameters]
-  );
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!canSave) return;
 
-  const logParameter = api.system.logParameter.useMutation({
-    onSuccess: async () => {
+    setIsSaving(true);
+    try {
+      for (const entry of enteredValues) {
+        const parsedValue = Number(entry.raw);
+        await logParameter.mutateAsync({
+          parameterId: entry.parameterId,
+          value: parsedValue,
+          loggedAt: new Date(loggedAt),
+        });
+      }
+
       await utils.system.getById.invalidate({ id: systemId });
       await utils.system.getActivity.invalidate({ systemId });
       router.refresh();
-      setValue("");
+      setValuesByParameter({});
       setLoggedAt(getNowLocalDateTime());
       setOpen(false);
-    },
-  });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <>
@@ -113,53 +136,49 @@ export function LogParameterButton({
               >
                 <DialogPanel className="w-full rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl">
                   <div className="mx-auto flex w-full max-w-md flex-col gap-2">
-                    <h3 className="mb-2 text-lg font-semibold">Log Parameter</h3>
+                    <h3 className="mb-2 text-lg font-semibold">Record Parameters</h3>
 
                     <form
                       className="flex flex-col gap-2"
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        if (!parameterId) return;
-                        const parsedValue = Number(value);
-                        if (Number.isNaN(parsedValue)) return;
-
-                        logParameter.mutate({
-                          parameterId,
-                          value: parsedValue,
-                          loggedAt: new Date(loggedAt),
-                        });
-                      }}
+                      onSubmit={handleSubmit}
                     >
                       <DateTimeField value={loggedAt} onChange={setLoggedAt} />
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <label className="flex flex-col gap-1">
-                          <span className="text-sm font-medium">Parameter</span>
-                          <select
-                            value={parameterId ?? ""}
-                            onChange={(event) =>
-                              setParameterId(Number(event.target.value))
-                            }
-                            className="rounded-md border border-slate-200 px-3 py-2"
-                          >
-                            {parameters.map((parameter) => (
-                              <option key={parameter.id} value={parameter.id}>
-                                {parameter.abbreviatedName} ({parameter.fullName})
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-
-                        <label className="flex flex-col gap-1">
-                          <span className="text-sm font-medium">Value</span>
-                          <input
-                            type="number"
-                            value={value}
-                            onChange={(event) => setValue(event.target.value)}
-                            placeholder={selectedParameter?.unit ?? ""}
-                            className="rounded-md border border-slate-200 px-3 py-2"
-                          />
-                        </label>
+                      <div className="overflow-hidden rounded-xl border border-slate-200">
+                        <div className="max-h-72 overflow-y-auto">
+                          {parameters.map((parameter) => (
+                            <div
+                              key={parameter.id}
+                              className="grid grid-cols-[minmax(0,1fr)_170px] items-center border-b border-slate-200 px-3 py-2 last:border-b-0"
+                            >
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold text-slate-900">
+                                  {parameter.abbreviatedName}
+                                </p>
+                                <p className="truncate text-xs text-slate-500">
+                                  {parameter.fullName}
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-end gap-2">
+                                <input
+                                  type="number"
+                                  value={valuesByParameter[parameter.id] ?? ""}
+                                  onChange={(event) =>
+                                    setValuesByParameter((current) => ({
+                                      ...current,
+                                      [parameter.id]: event.target.value,
+                                    }))
+                                  }
+                                  aria-label={`Value for ${parameter.fullName}`}
+                                  className="w-28 rounded-md border border-slate-200 px-2 py-1.5 text-right text-sm"
+                                />
+                                <span className="w-10 text-left text-sm text-slate-600">
+                                  {parameter.unit || "—"}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="mt-2 flex gap-2">
@@ -172,15 +191,10 @@ export function LogParameterButton({
                         </button>
                         <button
                           type="submit"
-                          disabled={
-                            logParameter.isPending ||
-                            !parameterId ||
-                            value.trim().length === 0 ||
-                            loggedAt.trim().length === 0
-                          }
+                          disabled={!canSave}
                           className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50 disabled:opacity-50"
                         >
-                          {logParameter.isPending ? "Saving..." : "Save"}
+                          {isSaving ? "Saving..." : "Save"}
                         </button>
                       </div>
                     </form>

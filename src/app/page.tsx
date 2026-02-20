@@ -1,4 +1,5 @@
 import { AddSystemForm } from "~/app/_components/add-system-form";
+import { BulkLogParametersButton } from "~/app/_components/bulk-log-parameters-button";
 import { CollapsibleSystemsSection } from "~/app/_components/collapsible-systems-section";
 import { LoginTray } from "~/app/_components/login-tray";
 import { SystemsList } from "~/app/_components/systems-list";
@@ -60,6 +61,17 @@ export default async function Home() {
           </div>
 
           <div className="flex items-center gap-2">
+            <BulkLogParametersButton
+              systems={systems.map((system) => ({
+                id: system.id,
+                name: system.name,
+                parameters: system.parameters.map((parameter) => ({
+                  id: parameter.id,
+                  abbreviatedName: parameter.abbreviatedName,
+                  unit: parameter.unit,
+                })),
+              }))}
+            />
             <AddSystemForm />
             <UserSettingsButton initialName={session.user.name ?? ""} />
           </div>

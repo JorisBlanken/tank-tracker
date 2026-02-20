@@ -85,9 +85,11 @@ export const systemRouter = createTRPCRouter({
             unit: true,
             showOnOverview: true,
             displayDecimals: true,
+            lowerBound: true,
+            upperBound: true,
             logs: {
               orderBy: { loggedAt: "desc" },
-              take: 1,
+              take: 2,
               select: {
                 value: true,
               },
@@ -742,6 +744,85 @@ export const systemRouter = createTRPCRouter({
       ]);
 
       return log;
+    }),
+
+  logParametersBulk: protectedProcedure
+    .input(
+      z.object({
+        loggedAt: z.coerce.date(),
+        entries: z
+          .array(
+            z.object({
+              parameterId: z.number().int().positive(),
+              value: z.number().finite(),
+            })
+          )
+          .min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
+      const uniqueParameterIds = Array.from(
+        new Set(input.entries.map((entry) => entry.parameterId))
+      );
+
+      const allowedParameters = await ctx.db.systemParameter.findMany({
+        where: {
+          id: { in: uniqueParameterIds },
+          system: sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id },
+        },
+        select: {
+          id: true,
+          systemId: true,
+        },
+      });
+
+      if (allowedParameters.length !== uniqueParameterIds.length) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const parameterById = new Map(
+        allowedParameters.map((parameter) => [parameter.id, parameter])
+      );
+
+      const logsData = input.entries.map((entry) => ({
+        parameterId: entry.parameterId,
+        value: entry.value,
+        loggedAt: input.loggedAt,
+      }));
+
+      const activitiesData = input.entries.map((entry) => {
+        const parameter = parameterById.get(entry.parameterId);
+        if (!parameter) {
+          throw new TRPCError({ code: "NOT_FOUND" });
+        }
+
+        return {
+          systemId: parameter.systemId,
+          parameterId: parameter.id,
+          type: "PARAMETER_LOGGED" as const,
+          value: entry.value,
+          loggedAt: input.loggedAt,
+        };
+      });
+
+      await ctx.db.$transaction([
+        ctx.db.systemParameterLog.createMany({
+          data: logsData,
+        }),
+        ctx.db.systemActivity.createMany({
+          data: activitiesData,
+        }),
+      ]);
+
+      return { count: input.entries.length };
     }),
 
   logWaterChange: protectedProcedure
