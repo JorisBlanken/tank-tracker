@@ -70,7 +70,7 @@ export function SystemSettingsSheet({
           </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center">
+            <div className="flex min-h-full items-end justify-center lg:items-center lg:px-4">
               <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-200"
@@ -80,7 +80,7 @@ export function SystemSettingsSheet({
                 leaveFrom="translate-y-0 opacity-100"
                 leaveTo="translate-y-4 opacity-0"
               >
-                <DialogPanel className="w-full max-h-[94vh] overflow-y-auto rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl">
+                <DialogPanel className="w-full max-h-[94vh] overflow-y-auto rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl lg:mx-auto lg:my-6 lg:max-h-[85vh] lg:max-w-2xl lg:rounded-2xl">
                   <div className="flex w-full flex-col gap-4">
                     <h3 className="text-lg font-semibold tracking-tight text-slate-900">
                       System Settings

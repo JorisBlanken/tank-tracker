@@ -133,7 +133,7 @@ export function BulkLogParametersButton({ systems }: BulkLogParametersButtonProp
           </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center">
+            <div className="flex min-h-full items-end justify-center lg:items-center lg:px-4">
               <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-200"
@@ -190,6 +190,7 @@ export function BulkLogParametersButton({ systems }: BulkLogParametersButtonProp
                                       </span>
                                       <input
                                         type="number"
+                                        step="any"
                                         value={valuesByCell[cellKey] ?? ""}
                                         onChange={(event) =>
                                           setValuesByCell((current) => ({

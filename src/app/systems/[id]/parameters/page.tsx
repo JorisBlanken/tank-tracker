@@ -23,8 +23,8 @@ export default async function ParameterPage({ params }: ParameterPageProps) {
 
   return (
     <main className="min-h-screen bg-slate-50 py-6 text-slate-900">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-        <header className="flex items-center gap-3 px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 lg:px-8">
+        <header className="flex items-center gap-3">
           <Link
             href={`/systems/${system.id}`}
             className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 shadow-sm"

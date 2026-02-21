@@ -31,7 +31,7 @@ export default async function SystemSettingsPage({
 
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-6 text-slate-900">
-      <div className="mx-auto w-full max-w-md">
+      <div className="mx-auto w-full max-w-6xl">
         <header className="mb-6 flex items-center gap-3">
           <Link
             href={`/systems/${system.id}`}

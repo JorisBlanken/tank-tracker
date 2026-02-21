@@ -45,8 +45,8 @@ export default async function SystemPage({ params }: SystemPageProps) {
 
   return (
     <main className="min-h-screen bg-slate-50 py-6 text-slate-900">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-        <header className="flex items-center justify-between gap-3 px-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 lg:px-8">
+        <header className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Link
               href="/"
@@ -82,77 +82,81 @@ export default async function SystemPage({ params }: SystemPageProps) {
           )}
         </header>
 
-        <section className="px-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">Parameters</h2>
-            <div className="flex items-center gap-2">
-              <LogParameterButton
-                systemId={system.id}
-                parameters={system.parameters.map((parameter) => ({
-                  id: parameter.id,
-                  fullName: parameter.fullName,
-                  abbreviatedName: parameter.abbreviatedName,
-                  unit: parameter.unit,
-                }))}
-              />
-              <LogDoseButton systemId={system.id} />
-              <Link
-                href={`/systems/${system.id}/parameters`}
-                aria-label="Open parameter trends"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                  <path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z"/>
-                </svg>
-              </Link>
-            </div>
+        <div className="grid gap-6 xl:grid-cols-2">
+          <div className="flex flex-col gap-6">
+            <section>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-semibold tracking-tight">Parameters</h2>
+                <div className="flex items-center gap-2">
+                  <LogParameterButton
+                    systemId={system.id}
+                    parameters={system.parameters.map((parameter) => ({
+                      id: parameter.id,
+                      fullName: parameter.fullName,
+                      abbreviatedName: parameter.abbreviatedName,
+                      unit: parameter.unit,
+                    }))}
+                  />
+                  <LogDoseButton systemId={system.id} />
+                  <Link
+                    href={`/systems/${system.id}/parameters`}
+                    aria-label="Open parameter trends"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                      <path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z"/>
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                <ul className="flex w-full">
+                  {overviewParameters.map((parameter) => (
+                    <li
+                      key={parameter.id}
+                      className="flex flex-1 flex-col gap-1 border-r border-slate-300 px-2 py-2 text-center last:border-r-0"
+                    >
+                      <div>
+                        <p className="text-base font-semibold leading-tight">
+                          {parameter.abbreviatedName}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500">
+                          {parameter.unit || " "}
+                        </p>
+                      </div>
+                      <p className="text-xl font-semibold leading-tight">
+                        {parameter.logs[0]
+                          ? formatNumber(parameter.logs[0].value, parameter.displayDecimals)
+                          : <span className="text-slate-500">--</span>}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            <InventoryMock systemId={system.id} initialItems={system.filterMedia} />
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
-            <ul className="flex w-full">
-              {overviewParameters.map((parameter) => (
-                <li
-                  key={parameter.id}
-                  className="flex flex-1 flex-col gap-1 border-r border-slate-300 px-2 py-2 text-center last:border-r-0"
-                >
-                  <div>
-                    <p className="text-base font-semibold leading-tight">
-                      {parameter.abbreviatedName}
-                    </p>
-                    <p className="text-xs font-medium text-slate-500">
-                      {parameter.unit || " "}
-                    </p>
-                  </div>
-                  <p className="text-xl font-semibold leading-tight">
-                    {parameter.logs[0]
-                      ? formatNumber(parameter.logs[0].value, parameter.displayDecimals)
-                      : <span className="text-slate-500">--</span>}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+          <div className="flex flex-col gap-6">
+            <section className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold tracking-tight">Notes</h2>
+                <LogNoteButton systemId={system.id} />
+              </div>
+              <NotesCarousel systemId={system.id} initialPage={initialNotesPage} />
+            </section>
 
-        <InventoryMock systemId={system.id} initialItems={system.filterMedia} />
-
-        <section className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <h2 className="px-5 text-lg font-semibold tracking-tight">Notes</h2>
-            <div className="px-5">
-              <LogNoteButton systemId={system.id} />
-            </div>
+            <section className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold tracking-tight">Timeline</h2>
+                <LogWaterChangeButton systemId={system.id} />
+              </div>
+              <ActivityLog systemId={system.id} initialPage={initialActivityPage} />
+            </section>
           </div>
-          <NotesCarousel systemId={system.id} initialPage={initialNotesPage} />
-        </section>
-
-        <section className="flex flex-col gap-3 px-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">Timeline</h2>
-            <LogWaterChangeButton systemId={system.id} />
-          </div>
-          <ActivityLog systemId={system.id} initialPage={initialActivityPage} />
-        </section>
+        </div>
       </div>
     </main>
   );
