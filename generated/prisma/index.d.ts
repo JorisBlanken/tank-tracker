@@ -4174,10 +4174,12 @@ export namespace Prisma {
 
   export type FilterMediaAvgAggregateOutputType = {
     id: number | null
+    replacementIntervalDays: number | null
   }
 
   export type FilterMediaSumAggregateOutputType = {
     id: number | null
+    replacementIntervalDays: number | null
   }
 
   export type FilterMediaMinAggregateOutputType = {
@@ -4185,6 +4187,7 @@ export namespace Prisma {
     name: string | null
     addedAt: Date | null
     lastReplacedAt: Date | null
+    replacementIntervalDays: number | null
     createdAt: Date | null
     updatedAt: Date | null
     systemId: string | null
@@ -4195,6 +4198,7 @@ export namespace Prisma {
     name: string | null
     addedAt: Date | null
     lastReplacedAt: Date | null
+    replacementIntervalDays: number | null
     createdAt: Date | null
     updatedAt: Date | null
     systemId: string | null
@@ -4205,6 +4209,7 @@ export namespace Prisma {
     name: number
     addedAt: number
     lastReplacedAt: number
+    replacementIntervalDays: number
     createdAt: number
     updatedAt: number
     systemId: number
@@ -4214,10 +4219,12 @@ export namespace Prisma {
 
   export type FilterMediaAvgAggregateInputType = {
     id?: true
+    replacementIntervalDays?: true
   }
 
   export type FilterMediaSumAggregateInputType = {
     id?: true
+    replacementIntervalDays?: true
   }
 
   export type FilterMediaMinAggregateInputType = {
@@ -4225,6 +4232,7 @@ export namespace Prisma {
     name?: true
     addedAt?: true
     lastReplacedAt?: true
+    replacementIntervalDays?: true
     createdAt?: true
     updatedAt?: true
     systemId?: true
@@ -4235,6 +4243,7 @@ export namespace Prisma {
     name?: true
     addedAt?: true
     lastReplacedAt?: true
+    replacementIntervalDays?: true
     createdAt?: true
     updatedAt?: true
     systemId?: true
@@ -4245,6 +4254,7 @@ export namespace Prisma {
     name?: true
     addedAt?: true
     lastReplacedAt?: true
+    replacementIntervalDays?: true
     createdAt?: true
     updatedAt?: true
     systemId?: true
@@ -4342,6 +4352,7 @@ export namespace Prisma {
     name: string
     addedAt: Date
     lastReplacedAt: Date | null
+    replacementIntervalDays: number | null
     createdAt: Date
     updatedAt: Date
     systemId: string
@@ -4371,6 +4382,7 @@ export namespace Prisma {
     name?: boolean
     addedAt?: boolean
     lastReplacedAt?: boolean
+    replacementIntervalDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     systemId?: boolean
@@ -4382,6 +4394,7 @@ export namespace Prisma {
     name?: boolean
     addedAt?: boolean
     lastReplacedAt?: boolean
+    replacementIntervalDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     systemId?: boolean
@@ -4393,6 +4406,7 @@ export namespace Prisma {
     name?: boolean
     addedAt?: boolean
     lastReplacedAt?: boolean
+    replacementIntervalDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     systemId?: boolean
@@ -4404,12 +4418,13 @@ export namespace Prisma {
     name?: boolean
     addedAt?: boolean
     lastReplacedAt?: boolean
+    replacementIntervalDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     systemId?: boolean
   }
 
-  export type FilterMediaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "addedAt" | "lastReplacedAt" | "createdAt" | "updatedAt" | "systemId", ExtArgs["result"]["filterMedia"]>
+  export type FilterMediaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "addedAt" | "lastReplacedAt" | "replacementIntervalDays" | "createdAt" | "updatedAt" | "systemId", ExtArgs["result"]["filterMedia"]>
   export type FilterMediaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     system?: boolean | SystemDefaultArgs<ExtArgs>
   }
@@ -4430,6 +4445,7 @@ export namespace Prisma {
       name: string
       addedAt: Date
       lastReplacedAt: Date | null
+      replacementIntervalDays: number | null
       createdAt: Date
       updatedAt: Date
       systemId: string
@@ -4861,6 +4877,7 @@ export namespace Prisma {
     readonly name: FieldRef<"FilterMedia", 'String'>
     readonly addedAt: FieldRef<"FilterMedia", 'DateTime'>
     readonly lastReplacedAt: FieldRef<"FilterMedia", 'DateTime'>
+    readonly replacementIntervalDays: FieldRef<"FilterMedia", 'Int'>
     readonly createdAt: FieldRef<"FilterMedia", 'DateTime'>
     readonly updatedAt: FieldRef<"FilterMedia", 'DateTime'>
     readonly systemId: FieldRef<"FilterMedia", 'String'>
@@ -13222,6 +13239,7 @@ export namespace Prisma {
     name: 'name',
     addedAt: 'addedAt',
     lastReplacedAt: 'lastReplacedAt',
+    replacementIntervalDays: 'replacementIntervalDays',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     systemId: 'systemId'
@@ -13574,6 +13592,7 @@ export namespace Prisma {
     name?: StringFilter<"FilterMedia"> | string
     addedAt?: DateTimeFilter<"FilterMedia"> | Date | string
     lastReplacedAt?: DateTimeNullableFilter<"FilterMedia"> | Date | string | null
+    replacementIntervalDays?: IntNullableFilter<"FilterMedia"> | number | null
     createdAt?: DateTimeFilter<"FilterMedia"> | Date | string
     updatedAt?: DateTimeFilter<"FilterMedia"> | Date | string
     systemId?: StringFilter<"FilterMedia"> | string
@@ -13585,6 +13604,7 @@ export namespace Prisma {
     name?: SortOrder
     addedAt?: SortOrder
     lastReplacedAt?: SortOrderInput | SortOrder
+    replacementIntervalDays?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     systemId?: SortOrder
@@ -13599,6 +13619,7 @@ export namespace Prisma {
     name?: StringFilter<"FilterMedia"> | string
     addedAt?: DateTimeFilter<"FilterMedia"> | Date | string
     lastReplacedAt?: DateTimeNullableFilter<"FilterMedia"> | Date | string | null
+    replacementIntervalDays?: IntNullableFilter<"FilterMedia"> | number | null
     createdAt?: DateTimeFilter<"FilterMedia"> | Date | string
     updatedAt?: DateTimeFilter<"FilterMedia"> | Date | string
     systemId?: StringFilter<"FilterMedia"> | string
@@ -13610,6 +13631,7 @@ export namespace Prisma {
     name?: SortOrder
     addedAt?: SortOrder
     lastReplacedAt?: SortOrderInput | SortOrder
+    replacementIntervalDays?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     systemId?: SortOrder
@@ -13628,6 +13650,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"FilterMedia"> | string
     addedAt?: DateTimeWithAggregatesFilter<"FilterMedia"> | Date | string
     lastReplacedAt?: DateTimeNullableWithAggregatesFilter<"FilterMedia"> | Date | string | null
+    replacementIntervalDays?: IntNullableWithAggregatesFilter<"FilterMedia"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"FilterMedia"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FilterMedia"> | Date | string
     systemId?: StringWithAggregatesFilter<"FilterMedia"> | string
@@ -14265,6 +14288,7 @@ export namespace Prisma {
     name: string
     addedAt: Date | string
     lastReplacedAt?: Date | string | null
+    replacementIntervalDays?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     system: SystemCreateNestedOneWithoutFilterMediaInput
@@ -14275,6 +14299,7 @@ export namespace Prisma {
     name: string
     addedAt: Date | string
     lastReplacedAt?: Date | string | null
+    replacementIntervalDays?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     systemId: string
@@ -14284,6 +14309,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     system?: SystemUpdateOneRequiredWithoutFilterMediaNestedInput
@@ -14294,6 +14320,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     systemId?: StringFieldUpdateOperationsInput | string
@@ -14304,6 +14331,7 @@ export namespace Prisma {
     name: string
     addedAt: Date | string
     lastReplacedAt?: Date | string | null
+    replacementIntervalDays?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     systemId: string
@@ -14313,6 +14341,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14322,6 +14351,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     systemId?: StringFieldUpdateOperationsInput | string
@@ -15068,6 +15098,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -15078,6 +15119,7 @@ export namespace Prisma {
     name?: SortOrder
     addedAt?: SortOrder
     lastReplacedAt?: SortOrder
+    replacementIntervalDays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     systemId?: SortOrder
@@ -15085,6 +15127,7 @@ export namespace Prisma {
 
   export type FilterMediaAvgOrderByAggregateInput = {
     id?: SortOrder
+    replacementIntervalDays?: SortOrder
   }
 
   export type FilterMediaMaxOrderByAggregateInput = {
@@ -15092,6 +15135,7 @@ export namespace Prisma {
     name?: SortOrder
     addedAt?: SortOrder
     lastReplacedAt?: SortOrder
+    replacementIntervalDays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     systemId?: SortOrder
@@ -15102,6 +15146,7 @@ export namespace Prisma {
     name?: SortOrder
     addedAt?: SortOrder
     lastReplacedAt?: SortOrder
+    replacementIntervalDays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     systemId?: SortOrder
@@ -15109,6 +15154,7 @@ export namespace Prisma {
 
   export type FilterMediaSumOrderByAggregateInput = {
     id?: SortOrder
+    replacementIntervalDays?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -15123,6 +15169,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumSystemActivityTypeFilter<$PrismaModel = never> = {
@@ -15156,17 +15218,6 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type SystemParameterNullableScalarRelationFilter = {
@@ -15267,22 +15318,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -15828,6 +15863,14 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type SystemUpdateOneRequiredWithoutFilterMediaNestedInput = {
     create?: XOR<SystemCreateWithoutFilterMediaInput, SystemUncheckedCreateWithoutFilterMediaInput>
     connectOrCreate?: SystemCreateOrConnectWithoutFilterMediaInput
@@ -15880,14 +15923,6 @@ export namespace Prisma {
     delete?: SystemParameterWhereInput | boolean
     connect?: SystemParameterWhereUniqueInput
     update?: XOR<XOR<SystemParameterUpdateToOneWithWhereWithoutSystemActivitiesInput, SystemParameterUpdateWithoutSystemActivitiesInput>, SystemParameterUncheckedUpdateWithoutSystemActivitiesInput>
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type SystemCreateNestedOneWithoutParametersInput = {
@@ -16273,6 +16308,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -16287,7 +16333,7 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -16295,14 +16341,12 @@ export namespace Prisma {
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedEnumSystemActivityTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.SystemActivityType | EnumSystemActivityTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.SystemActivityType[] | ListEnumSystemActivityTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SystemActivityType[] | ListEnumSystemActivityTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumSystemActivityTypeFilter<$PrismaModel> | $Enums.SystemActivityType
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -16314,6 +16358,13 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumSystemActivityTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SystemActivityType | EnumSystemActivityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SystemActivityType[] | ListEnumSystemActivityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SystemActivityType[] | ListEnumSystemActivityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSystemActivityTypeFilter<$PrismaModel> | $Enums.SystemActivityType
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -16371,22 +16422,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -16521,6 +16556,7 @@ export namespace Prisma {
     name: string
     addedAt: Date | string
     lastReplacedAt?: Date | string | null
+    replacementIntervalDays?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16530,6 +16566,7 @@ export namespace Prisma {
     name: string
     addedAt: Date | string
     lastReplacedAt?: Date | string | null
+    replacementIntervalDays?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16688,6 +16725,7 @@ export namespace Prisma {
     name?: StringFilter<"FilterMedia"> | string
     addedAt?: DateTimeFilter<"FilterMedia"> | Date | string
     lastReplacedAt?: DateTimeNullableFilter<"FilterMedia"> | Date | string | null
+    replacementIntervalDays?: IntNullableFilter<"FilterMedia"> | number | null
     createdAt?: DateTimeFilter<"FilterMedia"> | Date | string
     updatedAt?: DateTimeFilter<"FilterMedia"> | Date | string
     systemId?: StringFilter<"FilterMedia"> | string
@@ -17562,6 +17600,7 @@ export namespace Prisma {
     name: string
     addedAt: Date | string
     lastReplacedAt?: Date | string | null
+    replacementIntervalDays?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17657,6 +17696,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17666,6 +17706,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17675,6 +17716,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     addedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastReplacedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    replacementIntervalDays?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

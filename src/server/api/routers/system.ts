@@ -590,6 +590,7 @@ export const systemRouter = createTRPCRouter({
         systemId: z.string().cuid(),
         name: z.string().trim().min(1).max(120),
         addedAt: z.coerce.date(),
+        durationDays: z.number().int().positive().max(3650).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -619,6 +620,7 @@ export const systemRouter = createTRPCRouter({
             systemId: input.systemId,
             name: input.name,
             addedAt: input.addedAt,
+            replacementIntervalDays: input.durationDays,
           },
         }),
         ctx.db.systemActivity.create({
@@ -639,6 +641,7 @@ export const systemRouter = createTRPCRouter({
       z.object({
         mediaId: z.number().int().positive(),
         replacedAt: z.coerce.date(),
+        durationDays: z.number().int().positive().max(3650).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -667,6 +670,7 @@ export const systemRouter = createTRPCRouter({
           where: { id: input.mediaId },
           data: {
             lastReplacedAt: input.replacedAt,
+            replacementIntervalDays: input.durationDays,
           },
         }),
         ctx.db.systemActivity.create({
