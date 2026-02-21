@@ -396,7 +396,7 @@ function TrayDialog({
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center">
+          <div className="flex min-h-full items-end justify-center lg:items-center lg:px-4">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-200"
@@ -406,7 +406,7 @@ function TrayDialog({
               leaveFrom="translate-y-0 opacity-100"
               leaveTo="translate-y-4 opacity-0"
             >
-              <DialogPanel className="w-full rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl">
+              <DialogPanel className="w-full rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl lg:mx-auto lg:my-6 lg:max-w-xl lg:rounded-2xl">
                 <div className="mx-auto flex w-full max-w-md flex-col gap-2">
                   {children}
                 </div>

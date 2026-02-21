@@ -13,7 +13,7 @@ export default async function Home() {
   if (!session?.user) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 px-5 py-6 text-slate-900">
-        <div className="flex w-full max-w-md flex-col items-center gap-2 text-center">
+        <div className="flex w-full max-w-lg flex-col items-center gap-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Get Started</h1>
           <p className="text-sm text-slate-600">
             Log in to start managing your tanks.
@@ -54,7 +54,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-6 text-slate-900">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Systems</h1>

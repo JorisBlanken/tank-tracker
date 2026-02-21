@@ -593,10 +593,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -634,10 +642,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const existing = await ctx.db.filterMedia.findFirst({
         where: {
           id: input.mediaId,
-          system: { createdById: ctx.session.user.id },
+          system: sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id },
         },
         select: { id: true, name: true, systemId: true },
       });
@@ -674,10 +690,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const existing = await ctx.db.filterMedia.findFirst({
         where: {
           id: input.mediaId,
-          system: { createdById: ctx.session.user.id },
+          system: sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id },
         },
         select: { id: true, name: true, systemId: true },
       });
@@ -712,10 +736,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const parameter = await ctx.db.systemParameter.findFirst({
         where: {
           id: input.parameterId,
-          system: { createdById: ctx.session.user.id },
+          system: sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id },
         },
         select: { id: true, systemId: true },
       });
@@ -834,10 +866,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -868,10 +908,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -901,10 +949,18 @@ export const systemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const system = await ctx.db.system.findFirst({
         where: {
           id: input.systemId,
-          createdById: ctx.session.user.id,
+          ...(sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id }),
         },
         select: { id: true },
       });
@@ -926,11 +982,19 @@ export const systemRouter = createTRPCRouter({
   deleteNote: protectedProcedure
     .input(z.object({ activityId: z.number().int().positive() }))
     .mutation(async ({ ctx, input }) => {
+      const sessionEmail = ctx.session.user.email?.toLowerCase();
       const existing = await ctx.db.systemActivity.findFirst({
         where: {
           id: input.activityId,
           type: "NOTE_LOGGED",
-          system: { createdById: ctx.session.user.id },
+          system: sessionEmail
+            ? {
+                OR: [
+                  { createdById: ctx.session.user.id },
+                  { sharedAccesses: { some: { email: sessionEmail } } },
+                ],
+              }
+            : { createdById: ctx.session.user.id },
         },
         select: {
           id: true,
