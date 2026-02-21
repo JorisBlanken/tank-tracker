@@ -143,6 +143,7 @@ exports.Prisma.FilterMediaScalarFieldEnum = {
   name: 'name',
   addedAt: 'addedAt',
   lastReplacedAt: 'lastReplacedAt',
+  replacementIntervalDays: 'replacementIntervalDays',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   systemId: 'systemId'

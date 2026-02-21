@@ -12,7 +12,7 @@ import { type RouterOutputs, api } from "~/trpc/react";
 
 type FilterMediaSectionProps = {
   systemId: string;
-  initialItems: RouterOutputs["system"]["getById"]["filterMedia"];
+  initialMediaItems: RouterOutputs["system"]["getById"]["filterMedia"];
 };
 
 function getNowLocalDateTime() {
@@ -26,27 +26,33 @@ function formatDate(date: Date) {
   return formatRelativeDateTime(date);
 }
 
-export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProps) {
+export function FilterMediaSection({
+  systemId,
+  initialMediaItems,
+}: FilterMediaSectionProps) {
   const utils = api.useUtils();
   const [addOpen, setAddOpen] = useState(false);
   const [replaceOpen, setReplaceOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
-  const [newItemName, setNewItemName] = useState("");
-  const [newItemAddedAt, setNewItemAddedAt] = useState(getNowLocalDateTime);
+  const [selectedMediaId, setSelectedMediaId] = useState<number | null>(null);
+  const [newMediaName, setNewMediaName] = useState("");
+  const [newMediaAddedAt, setNewMediaAddedAt] = useState(getNowLocalDateTime);
+  const [newMediaDurationDays, setNewMediaDurationDays] = useState("");
   const [replacementDate, setReplacementDate] = useState(getNowLocalDateTime);
+  const [replacementDurationDays, setReplacementDurationDays] = useState("");
   const [removalDate, setRemovalDate] = useState(getNowLocalDateTime);
 
-  const { data: items = [] } = api.system.getFilterMedia.useQuery(
+  const { data: mediaItems = [] } = api.system.getFilterMedia.useQuery(
     { systemId },
-    { initialData: initialItems }
+    { initialData: initialMediaItems }
   );
 
   const createFilterMedia = api.system.createFilterMedia.useMutation({
     onSuccess: async () => {
       await utils.system.getFilterMedia.invalidate({ systemId });
-      setNewItemName("");
-      setNewItemAddedAt(getNowLocalDateTime());
+      setNewMediaName("");
+      setNewMediaAddedAt(getNowLocalDateTime());
+      setNewMediaDurationDays("");
       setAddOpen(false);
     },
   });
@@ -54,7 +60,8 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
   const replaceFilterMedia = api.system.replaceFilterMedia.useMutation({
     onSuccess: async () => {
       await utils.system.getFilterMedia.invalidate({ systemId });
-      setSelectedItemId(null);
+      setSelectedMediaId(null);
+      setReplacementDurationDays("");
       setReplaceOpen(false);
     },
   });
@@ -62,49 +69,61 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
   const deleteFilterMedia = api.system.deleteFilterMedia.useMutation({
     onSuccess: async () => {
       await utils.system.getFilterMedia.invalidate({ systemId });
-      setSelectedItemId(null);
+      setSelectedMediaId(null);
       setRemovalDate(getNowLocalDateTime());
       setDeleteOpen(false);
     },
   });
 
-  const selectedItem = useMemo(
-    () => items.find((item) => item.id === selectedItemId) ?? null,
-    [items, selectedItemId]
+  const selectedMedia = useMemo(
+    () => mediaItems.find((media) => media.id === selectedMediaId) ?? null,
+    [mediaItems, selectedMediaId]
   );
 
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex items-center justify-between px-5">
+    <section className="min-w-0 flex flex-col gap-3">
+      <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold tracking-tight">Filter Media</h2>
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700"
+          aria-label="Add filter media"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-700"
         >
-          Add
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 -960 960 960"
+            width="24"
+            fill="currentColor"
+          >
+            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+          </svg>
         </button>
       </div>
 
-      {items.length === 0 ? (
-        <p className="px-5 text-sm text-slate-600">No filter media added yet.</p>
+      {mediaItems.length === 0 ? (
+        <p className="text-sm text-slate-600">No filter media added yet.</p>
       ) : (
-        <div className="no-scrollbar overflow-x-auto">
-          <ul className="flex w-max gap-2 px-5 pb-1">
-            {items.map((item) => (
+        <div className="no-scrollbar -mx-5 w-[calc(100%+2.5rem)] max-w-none overflow-x-auto overflow-y-hidden px-5 lg:-mx-8 lg:w-[calc(100%+4rem)] lg:px-8">
+          <ul className="flex min-w-max flex-nowrap gap-2 pb-1">
+            {mediaItems.map((media) => (
               <li
-                key={item.id}
+                key={media.id}
                 className="w-64 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm"
               >
                 <div className="mb-2 flex items-start justify-between gap-2">
-                  <p className="text-sm font-semibold text-slate-900">{item.name}</p>
+                  <p className="text-sm font-semibold text-slate-900">{media.name}</p>
                   <div className="flex items-center gap-1">
                     <button
                       type="button"
-                      aria-label={`Replace ${item.name}`}
+                      aria-label={`Replace ${media.name}`}
                       onClick={() => {
-                        setSelectedItemId(item.id);
+                        setSelectedMediaId(media.id);
                         setReplacementDate(getNowLocalDateTime());
+                        setReplacementDurationDays(
+                          media.replacementIntervalDays?.toString() ?? ""
+                        );
                         setReplaceOpen(true);
                       }}
                       className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-700"
@@ -121,9 +140,9 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                     </button>
                     <button
                       type="button"
-                      aria-label={`Delete ${item.name}`}
+                      aria-label={`Delete ${media.name}`}
                       onClick={() => {
-                        setSelectedItemId(item.id);
+                        setSelectedMediaId(media.id);
                         setRemovalDate(getNowLocalDateTime());
                         setDeleteOpen(true);
                       }}
@@ -142,9 +161,13 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                   </div>
                 </div>
                 <p className="text-xs text-slate-500">
-                  {item.lastReplacedAt ? "Last replaced" : "Added"}{" "}
-                  {formatDate(item.lastReplacedAt ?? item.addedAt)}
+                  {media.lastReplacedAt ? "Last replaced" : "Added"}{" "}
+                  {formatDate(media.lastReplacedAt ?? media.addedAt)}
                 </p>
+                {typeof media.replacementIntervalDays === "number" &&
+                  media.replacementIntervalDays > 0 && (
+                    <FilterMediaLifetimeBar media={media} />
+                  )}
               </li>
             ))}
           </ul>
@@ -183,17 +206,32 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                     </h3>
 
                     <DateTimeField
-                      value={newItemAddedAt}
-                      onChange={setNewItemAddedAt}
+                      value={newMediaAddedAt}
+                      onChange={setNewMediaAddedAt}
                     />
 
                     <label className="flex flex-col gap-1">
                       <span className="text-sm font-medium">Name</span>
                       <input
-                        value={newItemName}
-                        onChange={(event) => setNewItemName(event.target.value)}
+                        value={newMediaName}
+                        onChange={(event) => setNewMediaName(event.target.value)}
                         className="rounded-md border border-slate-200 px-3 py-2"
                         placeholder="e.g. Carbon"
+                      />
+                    </label>
+
+                    <label className="flex flex-col gap-1">
+                      <span className="text-sm font-medium">
+                        Duration (days, optional)
+                      </span>
+                      <input
+                        type="number"
+                        min={1}
+                        step={1}
+                        value={newMediaDurationDays}
+                        onChange={(event) => setNewMediaDurationDays(event.target.value)}
+                        className="rounded-md border border-slate-200 px-3 py-2"
+                        placeholder="e.g. 30"
                       />
                     </label>
 
@@ -208,17 +246,31 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                       <button
                         type="button"
                         onClick={() => {
-                          if (newItemName.trim().length === 0) return;
+                          if (newMediaName.trim().length === 0) return;
+                          const parsedDuration =
+                            newMediaDurationDays.trim().length > 0
+                              ? Number(newMediaDurationDays)
+                              : undefined;
+                          if (
+                            parsedDuration !== undefined &&
+                            (!Number.isInteger(parsedDuration) || parsedDuration <= 0)
+                          ) {
+                            return;
+                          }
                           createFilterMedia.mutate({
                             systemId,
-                            name: newItemName.trim(),
-                            addedAt: new Date(newItemAddedAt),
+                            name: newMediaName.trim(),
+                            addedAt: new Date(newMediaAddedAt),
+                            durationDays: parsedDuration,
                           });
                         }}
                         disabled={
                           createFilterMedia.isPending ||
-                          newItemName.trim().length === 0 ||
-                          newItemAddedAt.trim().length === 0
+                          newMediaName.trim().length === 0 ||
+                          newMediaAddedAt.trim().length === 0 ||
+                          (newMediaDurationDays.trim().length > 0 &&
+                            (!Number.isInteger(Number(newMediaDurationDays)) ||
+                              Number(newMediaDurationDays) <= 0))
                         }
                         className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50"
                       >
@@ -265,12 +317,29 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                 <DialogPanel className="w-full rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl lg:mx-auto lg:my-6 lg:max-w-xl lg:rounded-2xl">
                   <div className="mx-auto flex w-full max-w-md flex-col gap-2">
                     <h3 className="text-lg font-semibold text-slate-900">
-                      Replace {selectedItem?.name}?
+                      Replace {selectedMedia?.name}?
                     </h3>
                     <DateTimeField
                       value={replacementDate}
                       onChange={setReplacementDate}
                     />
+
+                    <label className="flex flex-col gap-1">
+                      <span className="text-sm font-medium">
+                        Duration (days, optional)
+                      </span>
+                      <input
+                        type="number"
+                        min={1}
+                        step={1}
+                        value={replacementDurationDays}
+                        onChange={(event) =>
+                          setReplacementDurationDays(event.target.value)
+                        }
+                        className="rounded-md border border-slate-200 px-3 py-2"
+                        placeholder="e.g. 30"
+                      />
+                    </label>
 
                     <div className="mt-2 flex gap-2">
                       <button
@@ -283,16 +352,31 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                       <button
                         type="button"
                         onClick={() => {
-                          if (!selectedItem) return;
+                          if (!selectedMedia) return;
+                          const parsedDuration =
+                            replacementDurationDays.trim().length > 0
+                              ? Number(replacementDurationDays)
+                              : undefined;
+                          if (
+                            parsedDuration !== undefined &&
+                            (!Number.isInteger(parsedDuration) ||
+                              parsedDuration <= 0)
+                          ) {
+                            return;
+                          }
                           replaceFilterMedia.mutate({
-                            mediaId: selectedItem.id,
+                            mediaId: selectedMedia.id,
                             replacedAt: new Date(replacementDate),
+                            durationDays: parsedDuration,
                           });
                         }}
                         disabled={
                           replaceFilterMedia.isPending ||
-                          !selectedItem ||
-                          replacementDate.trim().length === 0
+                          !selectedMedia ||
+                          replacementDate.trim().length === 0 ||
+                          (replacementDurationDays.trim().length > 0 &&
+                            (!Number.isInteger(Number(replacementDurationDays)) ||
+                              Number(replacementDurationDays) <= 0))
                         }
                         className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50"
                       >
@@ -339,7 +423,7 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                 <DialogPanel className="w-full rounded-t-2xl border border-slate-200 bg-slate-50 p-4 shadow-xl lg:mx-auto lg:my-6 lg:max-w-xl lg:rounded-2xl">
                   <div className="mx-auto flex w-full max-w-md flex-col gap-2">
                     <h3 className="text-lg font-semibold text-slate-900">
-                      Remove {selectedItem?.name}?
+                      Remove {selectedMedia?.name}?
                     </h3>
                     <DateTimeField value={removalDate} onChange={setRemovalDate} />
                     <div className="mt-2 flex gap-2">
@@ -353,15 +437,15 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
                       <button
                         type="button"
                         onClick={() => {
-                          if (!selectedItem) return;
+                          if (!selectedMedia) return;
                           deleteFilterMedia.mutate({
-                            mediaId: selectedItem.id,
+                            mediaId: selectedMedia.id,
                             removedAt: new Date(removalDate),
                           });
                         }}
                         disabled={
                           deleteFilterMedia.isPending ||
-                          !selectedItem ||
+                          !selectedMedia ||
                           removalDate.trim().length === 0
                         }
                         className="flex-1 rounded-lg border border-slate-700 bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-50"
@@ -377,6 +461,44 @@ export function InventoryMock({ systemId, initialItems }: FilterMediaSectionProp
         </Dialog>
       </Transition>
     </section>
+  );
+}
+
+function FilterMediaLifetimeBar({
+  media,
+}: {
+  media: RouterOutputs["system"]["getById"]["filterMedia"][number];
+}) {
+  const durationDays = media.replacementIntervalDays;
+  if (!durationDays || durationDays <= 0) return null;
+
+  const baseDate = media.lastReplacedAt ?? media.addedAt;
+  const baseMs = baseDate.getTime();
+  const durationMs = durationDays * 24 * 60 * 60 * 1000;
+  const elapsedMs = Date.now() - baseMs;
+  const ratioRemaining = Math.max(0, Math.min(1, 1 - elapsedMs / durationMs));
+  const remainingPercent = Math.round(ratioRemaining * 100);
+  const barColorClass =
+    remainingPercent === 0
+      ? "bg-red-500"
+      : ratioRemaining < 0.1
+        ? "bg-amber-400"
+        : "bg-emerald-500";
+  const remainingTextClass =
+    remainingPercent === 0 ? "text-red-500" : "text-slate-500";
+
+  return (
+    <div className="mt-2">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+        <div
+          className={`h-full ${barColorClass}`}
+          style={{ width: remainingPercent === 0 ? "2px" : `${remainingPercent}%` }}
+        />
+      </div>
+      <p className={`mt-1 text-[11px] ${remainingTextClass}`}>
+        {remainingPercent}% remaining
+      </p>
+    </div>
   );
 }
 

@@ -45,13 +45,13 @@ export function NotesCarousel({ systemId, initialPage }: NotesCarouselProps) {
   }
 
   if (notes.length === 0) {
-    return <p className="px-5 text-sm text-slate-600">No notes yet.</p>;
+    return <p className="text-sm text-slate-600">No notes yet.</p>;
   }
 
   return (
     <div className="flex flex-col gap-3">
       <div className="no-scrollbar overflow-x-auto">
-        <ul className="flex w-max gap-2 px-5 pb-1">
+        <ul className="flex w-max gap-2 pb-1">
           {notes.map((note) => (
             <li
               key={note.id}
